@@ -62,3 +62,22 @@ RegisterBuilding("city:skyscraper", {
     },
     tiles = {"city_grey.png", "city_grey.png", "city_light_grey.png",  "city_window.png", "city_white.png"},
 })
+
+minetest.register_node("city:wind_turbine", {
+    description = S("Wind Turbine"),
+	inventory_image = "city_white.png",
+    drawtype = "mesh",
+    mesh = "city_wind_turbine.obj",
+    selection_box = {
+        type = "fixed",
+        fixed = {-1/2, -1/2, -1/2, 1/2, 2.2, 1/2},
+    },
+    collision_box = {
+        type = "fixed",
+        fixed = {-1/2, -1/2, -1/2, 1/2, 2.2, 1/2},
+    },
+    paramtype = "light",
+    paramtype2 = "facedir",
+    groups = {flammable = 1, energy_source = 7},
+    tiles = {"city_white.png"},
+})

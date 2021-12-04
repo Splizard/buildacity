@@ -12,6 +12,14 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
         minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-5), param2 = node.param2})
         minetest.sound_play("harvesting_sound", {pos = pos, max_hear_distance = 20})
     end
+    local energy = minetest.get_item_group(node.name, "energy_source")
+    if energy > 0 then
+        minetest.after(1, function(energy)
+            puncher:get_meta():set_int("energy", puncher:get_meta():get_int("energy") + energy);
+            puncher:hud_change(energy_count, "text", puncher:get_meta():get_int("energy"))
+        end, energy)
+        minetest.sound_play("harvesting_charge", {pos = pos, max_hear_distance = 20})
+    end
 end)
 
 minetest.hud_replace_builtin("health", nil)
@@ -51,6 +59,7 @@ minetest.register_on_joinplayer(function(player)
     player:get_inventory():set_list("main", {
         "city:road 1",
         "city:skyscraper 1",
+        "city:wind_turbine 1",
     })
     player:set_inventory_formspec("size[6,3]label[0.05,0.05;Harvest the Humans Information Portal]button_exit[0.8,2;1.5,0.8;close;Close]label[0.05,1.5;There is nothing here]")
 

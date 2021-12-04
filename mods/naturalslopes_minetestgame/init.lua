@@ -14,5 +14,3 @@ naturalslopeslib.default_definition.use_texture_alpha = "clip"
 dofile(path .."/nodes.lua")
 
 naturalslopeslib.reset_defaults()
-
-dofile(path .."/tools.lua")
