@@ -6,10 +6,10 @@ local brains_count = 1;
 local energy_count = 2;
 
 minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
-    if node.name == "city:building_full" then
+    if string.match(node.name, "city:.*_full") then
         puncher:get_meta():set_int("brains", puncher:get_meta():get_int("brains") + 1);
         puncher:hud_change(brains_count, "text", puncher:get_meta():get_int("brains"))
-        minetest.set_node(pos, {name = "city:building"})
+        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-5), param2 = node.param2})
         minetest.sound_play("harvesting_sound", {pos = pos, max_hear_distance = 20})
     end
 end)
@@ -33,6 +33,12 @@ minetest.register_globalstep(function(dt)
     end
 end)
 
+minetest.item_drop = function() end
+
+minetest.register_on_placenode(function(pos, newnode, placer, oldnode, itemstack, pointed_thing)
+    return true -- we don't have an inventory in this game, so we never remove items from the hotbar.
+end)
+
 --We need to attach the Energy and Humans HUD counts.
 --Humans is top left, Energy is top right.
 minetest.register_on_joinplayer(function(player)    
@@ -41,8 +47,16 @@ minetest.register_on_joinplayer(function(player)
         player:get_meta():set_float("energy", 100)
     end
 
+    --Initialise the buildbar (hotbar).
+    player:get_inventory():set_list("main", {
+        "city:road 1",
+        "city:skyscraper 1",
+    })
+    player:set_inventory_formspec("size[6,3]label[0.05,0.05;Harvest the Humans Information Portal]button_exit[0.8,2;1.5,0.8;close;Close]label[0.05,1.5;There is nothing here]")
+
     --Remove default HUD elements.
     player:hud_set_flags({healthbar=false, breathbar=false, wielditem=false})
+    player:hud_set_hotbar_image("harvesting_empty.png")
 
     --Brain Icon.
     player:hud_add({

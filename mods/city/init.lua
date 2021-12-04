@@ -1,5 +1,34 @@
 local S = minetest.get_translator("city")
 
+RegisterBuilding = function(name, def)
+    def.collision_box = def.selection_box
+    def.drawtype = "mesh"
+    def.paramtype = "light"
+    def.paramtype2 = "facedir"
+    def.groups = {flammable = 1}
+
+    local full = table.copy(def)
+
+    --replace full windows with lit windows
+    for i,v in ipairs(full.tiles) do
+        if v == "city_window.png" then
+            full.tiles[i] = "city_window_lit.png"
+        end
+    end
+
+    def.on_timer = function(pos, elapsed)
+        minetest.set_node(pos, {name = "city:skyscraper_full", param2 = minetest.get_node(pos).param2})
+    end
+    --setup a node timer that will turn the building into a full building
+    --after a random amount of time.
+    def.on_construct = function(pos, placer, itemstack, pointed_thing)
+        minetest.get_node_timer(pos):start(math.random(1, 60))
+    end
+
+    minetest.register_node(name, def)
+    minetest.register_node(name.."_full", full)
+end
+
 minetest.register_node("city:road", {
     drawtype = "raillike",
     description = S("Road"),
@@ -11,6 +40,7 @@ minetest.register_node("city:road", {
         type = "fixed",
         fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
     },
+    light_source = 8,
     wield_image = "city_road.png",
     inventory_image = "city_road.png",
     tiles = {
@@ -21,31 +51,14 @@ minetest.register_node("city:road", {
     },
 })
 
---City building, eventually changes into an occupied/full building.
-minetest.register_node("city:building", {
-    description = S("Building"),
-	texture = "city_building.png",
+RegisterBuilding("city:skyscraper", {
+    description = S("Skyscraper"),
 	inventory_image = "city_building.png",
-	wield_image = "city_building.png",
-	groups = {flammable = 1},
-    tiles = {"city_building_top.png", "city_building_top.png", "city_building.png", "city_building.png", "city_building.png", "city_building.png"},
-    on_timer = function(pos, elapsed)
-        minetest.set_node(pos, {name = "city:building_full"})
-    end,
-
-    --setup a node timer that will turn the building into a full building
-    --after a random amount of time.
-    on_construct = function(pos, placer, itemstack, pointed_thing)
-        print("on_construct ")
-        minetest.get_node_timer(pos):start(math.random(1, 60))
-    end
-})
-minetest.register_node("city:building_full", {
-    description = S("Building"),
-    texture = "city_building_full.png",
-    inventory_image = "city_building_full.png",
-    wield_image = "city_building_full.png",
-    groups = {flammable = 1},
-    light_source = 12,
-    tiles = {"city_building_top.png", "city_building_top.png", "city_building_full.png", "city_building_full.png", "city_building_full.png", "city_building_full.png"},
+    drawtype = "mesh",
+    mesh = "skyscraperA.obj",
+    selection_box = {
+        type = "fixed",
+        fixed = {-1/2, -1/2, -1/2, 1/2, 1.8, 1/2},
+    },
+    tiles = {"city_grey.png", "city_grey.png", "city_light_grey.png",  "city_window.png", "city_white.png"},
 })

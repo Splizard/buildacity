@@ -42,8 +42,8 @@ minetest.register_on_joinplayer(function(player)
 	player:set_formspec_prepend(formspec)
 
 	-- Set hotbar textures
-	player:hud_set_hotbar_image("gui_hotbar.png")
-	player:hud_set_hotbar_selected_image("gui_hotbar_selected.png")
+	--player:hud_set_hotbar_image("gui_hotbar.png")
+	--player:hud_set_hotbar_selected_image("gui_hotbar_selected.png")
 end)
 
 function default.get_hotbar_bg(x,y)
