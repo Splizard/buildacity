@@ -6,6 +6,7 @@ RegisterBuilding = function(name, def)
     def.paramtype = "light"
     def.paramtype2 = "facedir"
     def.groups = {flammable = 1}
+    def.node_placement_prediction = ""
 
     local full = table.copy(def)
 
@@ -30,7 +31,6 @@ RegisterBuilding = function(name, def)
 end
 
 minetest.register_node("city:road", {
-    drawtype = "raillike",
     description = S("Road"),
     paramtype = "light",
     sunlight_propagates = false,
@@ -40,15 +40,16 @@ minetest.register_node("city:road", {
         type = "fixed",
         fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
     },
-    light_source = 8,
     wield_image = "city_road.png",
     inventory_image = "city_road.png",
+    paramtype2 = "facedir",
+    drawtype = "mesh",
+    mesh = "city_road.obj",
     tiles = {
-        "city_road.png",
-        "city_road_corner.png",
-        "city_road_junction.png",
-        "city_road_crossing.png",
+        "city_hex_C1C1CC.png", "city_light_grey.png",  "city_grey.png",  "city_hex_C1C1CC.png"
     },
+    groups = {cost = 1},
+    node_placement_prediction = "",
 })
 
 RegisterBuilding("city:skyscraper", {
@@ -60,6 +61,7 @@ RegisterBuilding("city:skyscraper", {
         type = "fixed",
         fixed = {-1/2, -1/2, -1/2, 1/2, 1.8, 1/2},
     },
+    groups = {cost = 10},
     tiles = {"city_grey.png", "city_grey.png", "city_light_grey.png",  "city_window.png", "city_white.png"},
 })
 
@@ -70,14 +72,44 @@ minetest.register_node("city:wind_turbine", {
     mesh = "city_wind_turbine.obj",
     selection_box = {
         type = "fixed",
-        fixed = {-1/2, -1/2, -1/2, 1/2, 2.2, 1/2},
+        fixed = {-1/3, -1/2, -1/3, 1/3, 3, 1/3},
     },
     collision_box = {
         type = "fixed",
-        fixed = {-1/2, -1/2, -1/2, 1/2, 2.2, 1/2},
+        fixed = {-1/3, -1/2, -1/3, 1/3, 3, 1/3},
     },
     paramtype = "light",
     paramtype2 = "facedir",
     groups = {flammable = 1, energy_source = 7},
     tiles = {"city_white.png"},
+
+    on_construct = function(pos, placer, itemstack, pointed_thing)
+        local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
+        local blade_pos = vector.subtract(vector.new(), dir)
+        blade_pos.y = blade_pos.y + 2
+        minetest.set_node(vector.add(pos, blade_pos), {name="city:wind_turbine_blade", param2 = minetest.dir_to_wallmounted(dir)})
+    end
+})
+
+minetest.register_node("city:wind_turbine_blade", {
+    drawtype = "signlike",
+    inventory_image = "city_white.png",
+    paramtype = "light",
+    paramtype2 = "wallmounted",
+    selection_box = {
+		type = "wallmounted",
+    },
+    visual_scale = 2,
+    sunlight_propagates = true,
+    groups = {flammable = 1, energy_source = 7},
+    use_texture_alpha = false,
+    tiles = {{
+        name = "city_wind_turbine_blade_spinning.png",
+        animation = {
+            type = "vertical_frames",
+            aspect_w = 64,
+            aspect_h = 64,
+            length = 4,
+        },
+    }},
 })
