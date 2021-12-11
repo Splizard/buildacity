@@ -15,6 +15,7 @@ import (
 //spintex creates rotation animations
 //by spinning a texture. Output tex is
 //named input + "_spinning.png"
+//used for windturbine texture.
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("usage: spintex <texture> <frames=16>")

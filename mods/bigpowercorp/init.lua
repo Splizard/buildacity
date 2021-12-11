@@ -1,8 +1,9 @@
---Harvesting implements the gameplay logic of Harvest the Humans.
+--bigpowercorp implements the gameplay logic of Build a City.
 --In this gamemode, players have energy and are required to build
---cities so that they can harvest the humans from them.
+--cities so that they can collect coins and maintain bigpowercorp's
+--electricity generation infrastructure.
 
-local brains_count = 1;
+local coins_count = 1;
 local energy_count = 2;
 
 local AddPlayerEnergy = function(player, energy)
@@ -13,16 +14,26 @@ local AddPlayerEnergy = function(player, energy)
     end
 end
 
-local AddPlayerBrains = function(player, brains)
-    player:get_meta():set_int("brains", player:get_meta():get_int("brains") + brains);
-    player:hud_change(brains_count, "text", player:get_meta():get_int("brains"))
+local AddPlayerCoins = function(player, coins)
+    player:get_meta():set_int("coins", player:get_meta():get_int("coins") + coins);
+    player:hud_change(coins_count, "text", player:get_meta():get_int("coins"))
 end
 
+local suffix_len = #"_decayed"
+
 minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
-    if string.match(node.name, "city:.*_full") then
-        AddPlayerBrains(puncher, 1)
-        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-5), param2 = node.param2})
-        minetest.sound_play("harvesting_sound", {pos = pos, max_hear_distance = 20})
+    if string.match(node.name, "city:.*_decayed") then
+        AddPlayerCoins(puncher, 1)
+        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-suffix_len), param2 = node.param2})
+        minetest.sound_play("bigpowercorp_income", {pos = pos, max_hear_distance = 20})
+        minetest.add_particle({
+            pos={x=pos.x, y=pos.y, z=pos.z},
+            velocity={x=0, y=16, z=0},
+            acceleration={x=0,y=-42,z=0},
+            texture = "bigpowercorp_coin.png",
+            size = 8,
+            playername = puncher:get_player_name(),
+        })
         AddPlayerEnergy(puncher, -1)
     end
     local energy = minetest.get_item_group(node.name, "energy_source")
@@ -30,7 +41,7 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
         minetest.after(1, function(energy)
             AddPlayerEnergy(puncher, energy)
         end, energy)
-        minetest.sound_play("harvesting_charge", {pos = pos, max_hear_distance = 20})
+        minetest.sound_play("bigpowercorp_charge", {pos = pos, max_hear_distance = 20})
     end
 end)
 
@@ -92,8 +103,8 @@ minetest.register_item(":", {
 })
 
 minetest.register_on_respawnplayer(function(player)
-    player:get_meta():set_int("brains", 0);
-    player:hud_change(brains_count, "text", 0)
+    player:get_meta():set_int("coins", 0);
+    player:hud_change(coins_count, "text", 0)
     AddPlayerEnergy(player, 50)
 end)
 
@@ -109,29 +120,28 @@ minetest.register_on_joinplayer(function(player)
     player:get_inventory():set_list("main", {
         "city:road 1",
         "city:skyscraper 1",
-        "city:wind_turbine 1",
     })
-    player:set_inventory_formspec("size[6,3]label[0.05,0.05;Harvest the Humans Information Portal]button_exit[0.8,2;1.5,0.8;close;Close]label[0.05,1.5;There is nothing here]")
+    player:set_inventory_formspec("size[6,3]label[0.05,0.05;BigPowerCorp Employee Handbook]button_exit[0.8,2;1.5,0.8;close;Close]label[0.05,1.5;There is nothing here]")
 
     --Remove default HUD elements.
     player:hud_set_flags({healthbar=false, breathbar=false, wielditem=false})
-    player:hud_set_hotbar_image("harvesting_empty.png")
+    player:hud_set_hotbar_image("bigpowercorp_empty.png")
 
     --Brain Icon.
     player:hud_add({
         hud_elem_type = "statbar",
         position = {x=0, y=0},
-        text = "harvesting_brain.png",
+        text = "bigpowercorp_coin.png",
         number = 2,
         size = {x=64, y=64},
         offset = {x=10, y=0},
     })
     --Brain Count
     player:hud_add({
-        name = "brains",
+        name = "coins",
         hud_elem_type = "text",
         position = {x=0, y=0},
-        text = player:get_meta():get_int("brains"),
+        text = player:get_meta():get_int("coins"),
         number = 0xffffff,
         size = {x=3, y=3},
         offset = {x=90, y=5},
@@ -152,21 +162,21 @@ minetest.register_on_joinplayer(function(player)
     player:hud_add({
         hud_elem_type = "statbar",
         position = {x=1, y=0},
-        text = "harvesting_energy.png",
+        text = "bigpowercorp_energy.png",
         number = 2,
         size = {x=48, y=48},
         offset = {x=-64, y=7},
     })
     
 
-    --Setup camera, the player is a spaceship
+    --Setup camera, the player is inside an energy distrubution craft
     --and is able to fly through single-node spaces.
     player:set_properties({
         eye_height = 0.2,
         collisionbox = {-0.3, 0.0, -0.3, 0.3, 0.3, 0.3},
         visual = "mesh",
-        mesh = "harvesting_ship_default.obj",
-        textures = {"harvesting_ship_default.png", "harvesting_ship_default_highlight.png"},
+        mesh = "bigpowercorp_craft_default.obj",
+        textures = {"bigpowercorp_craft_default.png", "bigpowercorp_craft_default_highlight.png"},
     })
     player:set_eye_offset(nil, {x=0,y=0,z=10})
     local name = player:get_player_name()
@@ -204,8 +214,9 @@ minetest.register_on_mapgen_init(function()
     minetest.set_mapgen_setting("mgflat_lake_threshold", "0", true)
 end)
 
+--Wind turbines provided by BigPowerCorp.
 minetest.register_decoration({
-    name = "harvesting:wind_turbine",
+    name = "bigpowercorp:wind_turbine",
     deco_type = "schematic",
     place_on = {"default:dirt_with_grass"},
     sidelen = 2,
@@ -233,8 +244,9 @@ minetest.register_decoration({
     flags = "force_placement",
 })
 
+--Roads are starting points, where a player can start building from.
 minetest.register_decoration({
-    name = "harvesting:road",
+    name = "bigpowercorp:road",
     deco_type = "simple",
     place_on = {"default:dirt_with_grass"},
     fill_ratio = 0.0005,

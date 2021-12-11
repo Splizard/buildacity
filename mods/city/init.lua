@@ -1,6 +1,8 @@
 local S = minetest.get_translator("city")
 
-RegisterBuilding = function(name, def)
+city = {}
+
+local RegisterBuilding = function(name, def)
     def.collision_box = def.selection_box
     def.drawtype = "mesh"
     def.paramtype = "light"
@@ -13,44 +15,23 @@ RegisterBuilding = function(name, def)
     --replace full windows with lit windows
     for i,v in ipairs(full.tiles) do
         if v == "city_window.png" then
-            full.tiles[i] = "city_window_lit.png"
+            def.tiles[i] = "city_window_lit.png"
         end
     end
 
     def.on_timer = function(pos, elapsed)
-        minetest.set_node(pos, {name = "city:skyscraper_full", param2 = minetest.get_node(pos).param2})
+        minetest.set_node(pos, {name = "city:skyscraper_decayed", param2 = minetest.get_node(pos).param2})
     end
-    --setup a node timer that will turn the building into a full building
+    --setup a node timer that will decay the building
     --after a random amount of time.
     def.on_construct = function(pos, placer, itemstack, pointed_thing)
         minetest.get_node_timer(pos):start(math.random(1, 60))
     end
 
     minetest.register_node(name, def)
-    minetest.register_node(name.."_full", full)
+    minetest.register_node(name.."_decayed", full)
 end
 
-minetest.register_node("city:road", {
-    description = S("Road"),
-    paramtype = "light",
-    sunlight_propagates = false,
-    is_ground_content = false,
-    walkable = false,
-    selection_box = {
-        type = "fixed",
-        fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
-    },
-    wield_image = "city_road.png",
-    inventory_image = "city_road.png",
-    paramtype2 = "facedir",
-    drawtype = "mesh",
-    mesh = "city_road.obj",
-    tiles = {
-        "city_hex_C1C1CC.png", "city_light_grey.png",  "city_grey.png",  "city_hex_C1C1CC.png"
-    },
-    groups = {cost = 1},
-    node_placement_prediction = "",
-})
 
 RegisterBuilding("city:skyscraper", {
     description = S("Skyscraper"),
@@ -113,3 +94,7 @@ minetest.register_node("city:wind_turbine_blade", {
         },
     }},
 })
+
+local modpath = minetest.get_modpath("city")
+
+dofile(modpath.."/roads.lua")
