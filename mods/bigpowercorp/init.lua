@@ -215,10 +215,11 @@ minetest.register_on_mapgen_init(function()
 end)
 
 --Wind turbines provided by BigPowerCorp.
+--Only spawn on hills.
 minetest.register_decoration({
     name = "bigpowercorp:wind_turbine",
     deco_type = "schematic",
-    place_on = {"default:dirt_with_grass"},
+    place_on = {"polymap:grass"},
     sidelen = 2,
     noise_params = {
         offset = 0,
@@ -248,7 +249,7 @@ minetest.register_decoration({
 minetest.register_decoration({
     name = "bigpowercorp:road",
     deco_type = "simple",
-    place_on = {"default:dirt_with_grass"},
+    place_on = {"polymap:grass"},
     fill_ratio = 0.0005,
     biomes = {"grassland"},
     y_max = 8,
