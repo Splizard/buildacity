@@ -24,6 +24,7 @@ minetest.register_node("polymap:water", {
 
 naturalslopeslib.register_slope("polymap:grass", {
         description = S("Grass Slope"),
+        pointable = false,
     },
     200,
     {mapgen = 0.33, place = 0.5}
