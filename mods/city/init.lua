@@ -72,6 +72,14 @@ minetest.register_node("city:wind_turbine", {
     end
 })
 
+minetest.register_node("city:light", {
+    drawtype = "airlike",
+    paramtype = "light",
+    sunlight_propagates = true,
+    light_source = 14,
+    pointable = false,
+})
+
 minetest.register_node("city:wind_turbine_blade", {
     drawtype = "signlike",
     inventory_image = "city_white.png",

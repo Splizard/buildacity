@@ -94,6 +94,7 @@ local register_road = function(name, mesh, tiles)
 
         after_place_node = function(pos)
             city.update_roads(pos)
+            minetest.set_node({x=pos.x, y=pos.y+1, z=pos.z}, {name="city:light"})
         end,
     })
 end
