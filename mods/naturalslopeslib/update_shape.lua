@@ -303,6 +303,9 @@ local function get_edges(minp, maxp)
 	}
 end
 
+local buffer = {}
+local buffer_param = {}
+
 --- Massive shape update with VoxelManip.
 -- @param minp Lower boundary of area.
 -- @param mapx Higher boundary of area.
@@ -318,8 +321,8 @@ function naturalslopeslib.area_chance_update_shape(minp, maxp, factor, skip, pro
 	local vm, emin, emax = minetest.get_voxel_manip()
 	local e1, e2 = vm:read_from_map(minp, maxp)
 	local area = VoxelArea:new{MinEdge = e1, MaxEdge = e2}
-	local data = vm:get_data()
-	local param2_data = vm:get_param2_data()
+	local data = vm:get_data(buffer)
+	local param2_data = vm:get_param2_data(buffer_param)
 	local i = area:indexp(e1)
 	local imax = area:indexp(e2)
 	if progressive_edges then
