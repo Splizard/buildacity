@@ -52,9 +52,13 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
     end
     local energy = minetest.get_item_group(node.name, "energy_source")
     if energy > 0 then
+        if node.name == "city:wind_turbine" then 
+            energy = energy * (pos.y-8) --energy is proportional to height (wind)
+        end
         minetest.after(1, function(energy)
-            AddPlayerEnergy(puncher, energy)
-            city.disable(pos)
+            if city.disable(pos) then
+                AddPlayerEnergy(puncher, energy)
+            end
         end, energy)
         minetest.sound_play("bigpowercorp_charge", {pos = pos, max_hear_distance = 20})
     end
@@ -147,13 +151,16 @@ minetest.register_on_joinplayer(function(player)
         player:get_meta():set_float("energy", 100)
     end
 
-    --Initialise the buildbar (hotbar).
-    player:get_inventory():set_list("main", {
+    local list = {
         "city:road 1",
         "city:skyscraper 1",
         "bigpowercorp:spanner 1",
         "bigpowercorp:destroyer 1", 
-    })
+    }
+
+    --Initialise the buildbar (hotbar).
+    player:get_inventory():set_list("main", list)
+    player:hud_set_hotbar_itemcount(#list)
     player:set_inventory_formspec("size[6,3]label[0.05,0.05;BigPowerCorp Employee Handbook]button_exit[0.8,2;1.5,0.8;close;Close]label[0.05,1.5;There is nothing here]")
 
     --Remove default HUD elements.
@@ -304,6 +311,8 @@ minetest.register_item("bigpowercorp:spanner", {
                     minetest.sound_play("bigpowercorp_repair", {pos = pos, max_hear_distance = 20})
                     AddPlayerCoins(user, -5)
                 end
+            else
+                minetest.sound_play("bigpowercorp_error", {pos = pos, max_hear_distance = 20})
             end
         end
     end

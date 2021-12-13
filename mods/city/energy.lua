@@ -5,7 +5,7 @@ local S = minetest.get_translator("city")
 --this function has no effect and returns false.
 function city.disable(pos) 
     local node = minetest.get_node(pos)
-    if minetest.get_item_group(node.name, "energy_source") then
+    if minetest.get_item_group(node.name, "energy_source") and not string.match(node.name, "city:.*_disabled") then
         minetest.set_node(pos, {name = node.name.."_disabled", param2 = node.param2})
         return true
     end
@@ -46,7 +46,7 @@ minetest.register_node("city:wind_turbine", {
     },
     paramtype = "light",
     paramtype2 = "facedir",
-    groups = {flammable = 1, energy_source = 7},
+    groups = {flammable = 1, energy_source = 2},
     tiles = {"city_white.png"},
 
     on_construct = function(pos, placer, itemstack, pointed_thing)
