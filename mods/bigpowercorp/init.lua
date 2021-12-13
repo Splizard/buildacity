@@ -3,6 +3,8 @@
 --cities so that they can collect coins and maintain bigpowercorp's
 --electricity generation infrastructure.
 
+local S = minetest.get_translator("bigpowercorp")
+
 local coins_count = 1;
 local energy_count = 2;
 
@@ -14,17 +16,29 @@ local AddPlayerEnergy = function(player, energy)
     end
 end
 
+--returns true if the player can afford.
 local AddPlayerCoins = function(player, coins)
     player:get_meta():set_int("coins", player:get_meta():get_int("coins") + coins);
+    if player:get_meta():get_int("coins") < 0 then
+        player:get_meta():set_int("coins", player:get_meta():get_int("coins")-coins)
+        return false
+    end
     player:hud_change(coins_count, "text", player:get_meta():get_int("coins"))
+    return true
 end
 
-local suffix_len = #"_decayed"
+local PlayerCanAfford = function(player, coins)
+    return player:get_meta():get_int("coins") >= coins
+end
+
+local decayed_suffix_len = #"_decayed"
+local broken_suffix_len = #"_broken"
+
 
 minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
     if string.match(node.name, "city:.*_decayed") then
         AddPlayerCoins(puncher, 1)
-        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-suffix_len), param2 = node.param2})
+        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-decayed_suffix_len), param2 = node.param2})
         minetest.sound_play("bigpowercorp_income", {pos = pos, max_hear_distance = 20})
         minetest.add_particle({
             pos={x=pos.x, y=pos.y, z=pos.z},
@@ -40,8 +54,25 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
     if energy > 0 then
         minetest.after(1, function(energy)
             AddPlayerEnergy(puncher, energy)
+            city.disable(pos)
         end, energy)
         minetest.sound_play("bigpowercorp_charge", {pos = pos, max_hear_distance = 20})
+    end
+    if string.match(node.name, "city:.*_disabled") then
+        minetest.sound_play("bigpowercorp_broken", {pos = pos, max_hear_distance = 20})
+        minetest.add_particlespawner({
+            amount = 20,
+            time = 0.3,
+            minpos={x=pos.x-0.5, y=pos.y-0.5, z=pos.z-0.5},
+            maxpos={x=pos.x+0.5, y=pos.y-0.5, z=pos.z+0.5},
+            minvel={x=-4, y=2, z=-4},
+            maxvel={x=4, y=4, z=4},
+            texture = "bigpowercorp_energy.png",
+            minsize = 1,
+            maxsize = 1,
+            minexptime = 0.2,
+            maxexptime = 0.2,
+        })
     end
 end)
 
@@ -120,6 +151,8 @@ minetest.register_on_joinplayer(function(player)
     player:get_inventory():set_list("main", {
         "city:road 1",
         "city:skyscraper 1",
+        "bigpowercorp:spanner 1",
+        "bigpowercorp:destroyer 1", 
     })
     player:set_inventory_formspec("size[6,3]label[0.05,0.05;BigPowerCorp Employee Handbook]button_exit[0.8,2;1.5,0.8;close;Close]label[0.05,1.5;There is nothing here]")
 
@@ -215,7 +248,7 @@ minetest.register_on_mapgen_init(function()
 end)
 
 --Wind turbines provided by BigPowerCorp.
---Only spawn on hills.
+--They only spawn on hills (we assume flat mapgen from polymap).
 minetest.register_decoration({
     name = "bigpowercorp:wind_turbine",
     deco_type = "schematic",
@@ -255,4 +288,63 @@ minetest.register_decoration({
     y_max = 8,
     y_min = 0,
     decoration = "city:road",
+})
+
+--Spanner is used to fix broken power sources.
+minetest.register_item("bigpowercorp:spanner", {
+    description = S("Spanner"),
+    inventory_image = "bigpowercorp_spanner.png",
+    type = "tool",
+    on_place = function(itemstack, user, pointed_thing)
+        if pointed_thing.type == "node" then
+            local pos = pointed_thing.under
+            local node = minetest.get_node(pos)
+            if PlayerCanAfford(user, 5) then
+                if city.enable(pos) then
+                    minetest.sound_play("bigpowercorp_repair", {pos = pos, max_hear_distance = 20})
+                    AddPlayerCoins(user, -5)
+                end
+            end
+        end
+    end
+})
+
+--Destroyer is used to destroy built nodes such as roads and buildings.
+minetest.register_item("bigpowercorp:destroyer", {
+    description = S("Destroyer"),
+    inventory_image = "bigpowercorp_destroyer.png",
+    type = "tool",
+    on_place = function(itemstack, user, pointed_thing)
+        if pointed_thing.type == "node" then
+            local pos = pointed_thing.under
+
+            if minetest.is_protected(pos, user:get_player_name()) then
+                minetest.record_protection_violation(pos, user:get_player_name())
+                return
+            end
+
+            local node = minetest.get_node(pos)
+            if minetest.get_item_group(node.name, "cost") then
+                AddPlayerEnergy(user, -5)
+
+                --'explode' the node.
+                minetest.set_node(pos, {name = "air"})
+                minetest.add_particlespawner({
+                    amount = 10,
+                    time = 0.2,
+                    minpos={x=pos.x-0.5, y=pos.y-0.5, z=pos.z-0.5},
+                    maxpos={x=pos.x+0.5, y=pos.y-0.5, z=pos.z+0.5},
+                    minvel={x=-4, y=2, z=-4},
+                    maxvel={x=4, y=4, z=4},
+                    texture = "bigpowercorp_craft_default.png",
+                    minsize = 1,
+                    maxsize = 1,
+                    minexptime = 0.2,
+                    maxexptime = 0.2,
+                })
+                minetest.sound_play("bigpowercorp_explode", {pos = pos, max_hear_distance = 20})
+                city.update_roads(pos)
+            end
+        end
+    end
 })

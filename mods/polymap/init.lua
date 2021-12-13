@@ -19,12 +19,13 @@ minetest.register_node("polymap:stone", {
 minetest.register_node("polymap:water", {
     description = "Water",
     tiles = {"polymap_water.png"},
+    pointable = false,
     is_ground_content = true,
 })
 
 naturalslopeslib.register_slope("polymap:grass", {
         description = S("Grass Slope"),
-        pointable = false,
+        pointable = false, --because selection box is ugly.
     },
     200,
     {mapgen = 0.33, place = 0.5}

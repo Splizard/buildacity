@@ -7,7 +7,7 @@ local RegisterBuilding = function(name, def)
     def.drawtype = "mesh"
     def.paramtype = "light"
     def.paramtype2 = "facedir"
-    def.groups = {flammable = 1}
+    def.groups = {flammable = 1, cost = 1}
     def.node_placement_prediction = ""
 
     local full = table.copy(def)
@@ -46,32 +46,6 @@ RegisterBuilding("city:skyscraper", {
     tiles = {"city_grey.png", "city_grey.png", "city_light_grey.png",  "city_window.png", "city_white.png"},
 })
 
-minetest.register_node("city:wind_turbine", {
-    description = S("Wind Turbine"),
-	inventory_image = "city_white.png",
-    drawtype = "mesh",
-    mesh = "city_wind_turbine.obj",
-    selection_box = {
-        type = "fixed",
-        fixed = {-1/3, -1/2, -1/3, 1/3, 3, 1/3},
-    },
-    collision_box = {
-        type = "fixed",
-        fixed = {-1/3, -1/2, -1/3, 1/3, 3, 1/3},
-    },
-    paramtype = "light",
-    paramtype2 = "facedir",
-    groups = {flammable = 1, energy_source = 7},
-    tiles = {"city_white.png"},
-
-    on_construct = function(pos, placer, itemstack, pointed_thing)
-        local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
-        local blade_pos = vector.subtract(vector.new(), dir)
-        blade_pos.y = blade_pos.y + 2
-        minetest.set_node(vector.add(pos, blade_pos), {name="city:wind_turbine_blade", param2 = minetest.dir_to_wallmounted(dir)})
-    end
-})
-
 minetest.register_node("city:light", {
     drawtype = "airlike",
     paramtype = "light",
@@ -80,29 +54,8 @@ minetest.register_node("city:light", {
     pointable = false,
 })
 
-minetest.register_node("city:wind_turbine_blade", {
-    drawtype = "signlike",
-    inventory_image = "city_white.png",
-    paramtype = "light",
-    paramtype2 = "wallmounted",
-    selection_box = {
-		type = "wallmounted",
-    },
-    visual_scale = 2,
-    sunlight_propagates = true,
-    groups = {flammable = 1, energy_source = 7},
-    use_texture_alpha = false,
-    tiles = {{
-        name = "city_wind_turbine_blade_spinning.png",
-        animation = {
-            type = "vertical_frames",
-            aspect_w = 64,
-            aspect_h = 64,
-            length = 4,
-        },
-    }},
-})
 
 local modpath = minetest.get_modpath("city")
 
 dofile(modpath.."/roads.lua")
+dofile(modpath.."/energy.lua")
