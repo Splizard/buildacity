@@ -27,3 +27,7 @@ a modder, submit a PR!
 * Airports
 * Railroads
 * Ports/Ships
+* Upgradable Crafts
+* Disasters
+* Farms/Industry
+* Smoother Coastlines
