@@ -59,9 +59,13 @@ function city.register_building(name, def)
     for line in mtl_file:lines() do
         if line:sub(1,3) == "Kd " then
             local r, g, b = line:sub(4):match("(%S+) (%S+) (%S+)")
-            table.insert(tiles, {name="city_white.png", color={
+            local color = {
                 r=255*r, g=255*g, b=255*b, a=255,
-            }})
+            }
+            if line:sub(4) == "0.737 0.886 1" then
+                color.window = true
+            end
+            table.insert(tiles, {name="city_white.png", color=color})
         end
     end
     node_def.tiles = tiles
@@ -84,14 +88,14 @@ function city.register_building(name, def)
     if not def.self_sufficient then
         local decayed_node_def = table.copy(node_def)
 
-        --replace full windows with lit windows
-        for i,v in ipairs(node_def.tiles) do
-            if v == "city_window.png" then
-                def.tiles[i] = "city_window_lit.png"
+        --replace lit windows with dark windows
+        for i,v in ipairs(decayed_node_def.tiles) do
+            if v.color.window then
+                decayed_node_def.tiles[i].color = 0xFF1D2222
             end
         end
 
-        def.on_timer = function(pos, elapsed)
+        node_def.on_timer = function(pos, elapsed)
             minetest.set_node(pos, {name = name.."_decayed", param2 = minetest.get_node(pos).param2})
         end
 
@@ -100,7 +104,7 @@ function city.register_building(name, def)
 
     --setup a node timer that will decay the building
     --after a random amount of time.
-    def.on_construct = function(pos, placer, itemstack, pointed_thing)
+    node_def.on_construct = function(pos, placer, itemstack, pointed_thing)
         minetest.get_node_timer(pos):start(math.random(1, 60))
     end
 
