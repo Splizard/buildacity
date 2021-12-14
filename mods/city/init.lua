@@ -59,3 +59,4 @@ local modpath = minetest.get_modpath("city")
 
 dofile(modpath.."/roads.lua")
 dofile(modpath.."/energy.lua")
+dofile(modpath.."/buildings.lua")

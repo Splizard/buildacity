@@ -71,7 +71,6 @@ minetest.register_node("city:wind_turbine_blade", {
     pointable = false,
     visual_scale = 2,
     sunlight_propagates = true,
-    use_texture_alpha = false,
     tiles = {{
         name = "city_wind_turbine_blade_spinning.png",
         animation = {
@@ -124,6 +123,5 @@ minetest.register_node("city:wind_turbine_blade_disabled", {
     pointable = false,
     visual_scale = 2,
     sunlight_propagates = true,
-    use_texture_alpha = false,
     tiles = {"city_wind_turbine_blade.png"},
 })

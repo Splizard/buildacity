@@ -89,7 +89,7 @@ local register_road = function(name, mesh, tiles)
         drawtype = "mesh",
         mesh = mesh,
         tiles = tiles,
-        groups = {cost = 1},
+        groups = {cost = 2},
         node_placement_prediction = "",
 
         after_place_node = function(pos)

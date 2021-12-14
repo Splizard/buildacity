@@ -153,7 +153,7 @@ minetest.register_on_joinplayer(function(player)
 
     local list = {
         "city:road 1",
-        "city:skyscraper 1",
+        "bigpowercorp:house 1",
         "bigpowercorp:spanner 1",
         "bigpowercorp:destroyer 1", 
     }
@@ -226,6 +226,7 @@ minetest.register_on_joinplayer(function(player)
     
 end)
 
+--micromap.
 minetest.register_on_mapgen_init(function()
     minetest.set_mapgen_setting("mg_name", "flat", true)
     minetest.set_mapgen_setting("mg_flags", "noores,nocaves,nodungeons,light,decorations,biomes", true)
@@ -314,6 +315,23 @@ minetest.register_item("bigpowercorp:spanner", {
             else
                 minetest.sound_play("bigpowercorp_error", {pos = pos, max_hear_distance = 20})
             end
+        end
+    end
+})
+
+--Spanner is used to fix broken power sources.
+minetest.register_item("bigpowercorp:house", {
+    description = S("House"),
+    inventory_image = "bigpowercorp_house.png",
+    type = "tool",
+    on_place = function(itemstack, user, pointed_thing)
+        if pointed_thing.type == "node" then
+            local pos = pointed_thing.above
+            
+            --spawn a random level 1 building.
+            local name = city.buildings[1][math.random(1, #city.buildings[1])]
+
+            minetest.item_place_node(ItemStack(name.." 1"), user, pointed_thing)
         end
     end
 })
