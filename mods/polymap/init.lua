@@ -25,6 +25,7 @@ minetest.register_alias("mapgen_river_water_source", "polymap:water")
 minetest.register_node("polymap:grass", {
     description = "Grass",
     tiles = {"polymap_grass.png"},
+    groups = {ground=1},
     is_ground_content = true,
 })
 

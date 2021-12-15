@@ -172,6 +172,7 @@ minetest.register_on_joinplayer(function(player)
     local list = {
         "city:road 1",
         "bigpowercorp:house 1",
+        "city:skyscraper 1",
         "bigpowercorp:spanner 1",
         "bigpowercorp:destroyer 1", 
     }
@@ -344,12 +345,7 @@ minetest.register_item("bigpowercorp:house", {
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
-            local pos = pointed_thing.above
-            
-            --spawn a random level 1 building.
-            local name = city.buildings[1][math.random(1, #city.buildings[1])]
-
-            minetest.item_place_node(ItemStack(name.." 1"), user, pointed_thing)
+            city.build("house", pointed_thing.above, user)
         end
     end
 })
@@ -369,7 +365,7 @@ minetest.register_item("bigpowercorp:destroyer", {
             end
 
             local node = minetest.get_node(pos)
-            if minetest.get_item_group(node.name, "cost") then
+            if minetest.get_item_group(node.name, "cost") > 0 then
                 AddPlayerEnergy(user, -5)
 
                 --'explode' the node.

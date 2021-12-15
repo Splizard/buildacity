@@ -31,3 +31,4 @@ a modder, submit a PR!
 * Disasters
 * Farms/Industry
 * Smoother Coastlines
+* Mesecon-style power?

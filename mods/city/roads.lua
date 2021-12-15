@@ -90,6 +90,47 @@ function city.update_roads(pos)
     update_road({x=pos.x+1, y=pos.y, z=pos.z})
 end
 
+--city.get_road_near returns the most relevant road near position pos.
+--if facing position is provided and there are multiple relevant roads, 
+--it will return the one that is closer to the facing_pos.
+function city.get_road_near(pos, facing_pos)
+    local top = {x=pos.x, y=pos.y, z=pos.z+1}
+    local bot = {x=pos.x, y=pos.y, z=pos.z-1}
+    local left = {x=pos.x-1, y=pos.y, z=pos.z}
+    local right = {x=pos.x+1, y=pos.y, z=pos.z}
+
+    local relevant_roads = {}
+
+    if string.match(minetest.get_node(top).name, "city:road.*") then
+        table.insert(relevant_roads, top)
+    end
+    if string.match(minetest.get_node(bot).name, "city:road.*") then
+        table.insert(relevant_roads, bot)
+    end
+    if string.match(minetest.get_node(left).name, "city:road.*") then
+        table.insert(relevant_roads, left)
+    end
+    if string.match(minetest.get_node(right).name, "city:road.*") then
+        table.insert(relevant_roads, right)
+    end
+   
+    if facing_pos then
+        local min_dist = math.huge
+        local min_road = nil
+        for _, road in pairs(relevant_roads) do
+            local dist = vector.distance(road, facing_pos)
+            if dist < min_dist then
+                min_dist = dist
+                min_road = road
+            end
+        end
+        return min_road
+    end
+
+    --pick one at random 
+    return relevant_roads[math.random(#relevant_roads)]
+end
+
 local register_road = function(name, mesh, tiles)
     minetest.register_node(name, {
         description = S("Road"),
