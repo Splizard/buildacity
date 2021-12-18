@@ -32,3 +32,8 @@ a modder, submit a PR!
 * Farms/Industry
 * Smoother Coastlines
 * Mesecon-style power?
+
+## License
+This project is licensed under the The Qlovatech Community Trademark License 1.0
+this means you can do what you like with this project as long as you share your 
+changes and respect the community trademarks. See the https://qlova.tech/ctl/1.0
