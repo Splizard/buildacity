@@ -124,13 +124,17 @@ local register_road = function(name, mesh, tiles)
             type = "fixed",
             fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
         },
+        collision_box = {
+            type = "fixed",
+            fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
+        },
         wield_image = "city_road.png",
         inventory_image = "city_road.png",
         paramtype2 = "facedir",
         drawtype = "mesh",
-        mesh = mesh,
-        tiles = tiles,
-        groups = {cost = 2},
+        mesh = mesh..".obj",
+        tiles = city.load_material(mesh..".mtl"),
+        groups = {flammable = 1},
         node_placement_prediction = "",
 
         after_place_node = function(pos)
@@ -140,16 +144,8 @@ local register_road = function(name, mesh, tiles)
     })
 end
 
-register_road("city:road", "city_road.obj", {
-    "city_hex_C1C1CC.png", "city_light_grey.png", "city_grey.png", "city_hex_C1C1CC.png"
-})
-register_road("city:road_corner", "city_road_corner.obj", {
-    "city_hex_C1C1CC.png", "city_light_grey.png", "city_grey.png", "city_hex_C1C1CC.png"
-})
-register_road("city:road_junction", "city_road_junction.obj", {
-    "city_light_grey.png", "city_hex_C1C1CC.png", "city_grey.png", "city_hex_C1C1CC.png"
-})
-register_road("city:road_crossing", "city_road_crossing.obj", {
-    "city_hex_C1C1CC.png", "city_light_grey.png", "city_grey.png", "city_hex_C1C1CC.png"
-})
+register_road("city:road", "city_road")
+register_road("city:road_corner", "city_road_corner")
+register_road("city:road_junction", "city_road_junction")
+register_road("city:road_crossing", "city_road_crossing")
 

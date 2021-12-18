@@ -46,7 +46,7 @@ minetest.register_node("city:wind_turbine", {
     },
     paramtype = "light",
     paramtype2 = "facedir",
-    groups = {flammable = 1, energy_source = 2},
+    groups = {flammable = 1, energy_source = 4},
     tiles = {"city_white.png"},
 
     on_construct = function(pos, placer, itemstack, pointed_thing)

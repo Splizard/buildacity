@@ -1,6 +1,4 @@
-local S = minetest.get_translator("city")
 
-local models_path = minetest.get_modpath("city") .. "/models/"
 
 city.buildings = {}
 city.buildings_by_width = {}
@@ -8,6 +6,8 @@ city.buildings_by_width = {}
 minetest.register_node("city:space", {
     drawtype = "airlike",
     paramtype = "light",
+    pointable = false,
+    walkable = false,
     sunlight_propagates = true,
 })
 
@@ -98,43 +98,26 @@ function city.register_building(name, def)
         groups = {
             flammable = 1,
             width = def.width,
+            height = def.height,
         },
         node_placement_prediction = "",
+        tiles = city.load_material(def.mesh..".mtl")
     }
 
-    --open the mtl file and load the colors
-    --read the Kd lines and place the colors into the tiles.
-    --this works with models exported from AssetForge.
-    local mtl_file = io.open(models_path..def.mesh..".mtl", "r")
-    local tiles = {}
-    for line in mtl_file:lines() do
-        if line:sub(1,3) == "Kd " then
-            local r, g, b = line:sub(4):match("(%S+) (%S+) (%S+)")
-            local color = {
-                r=255*r, g=255*g, b=255*b, a=255,
-            }
-            if line:sub(4) == "0.737 0.886 1" then
-                color.window = true
-            end
-            table.insert(tiles, {name="city_white.png", color=color})
-        end
-    end
-    node_def.tiles = tiles
+    def.height = def.height or 1
 
-    if def.length and def.length > 1 then
-        node_def.selection_box = {
-            type = "fixed",
-            fixed = {
-                {-0.5, -0.5, -0.5, -0.5+1*def.length, 0.5, 0.5},
-            },
-        }
-        node_def.collision_box = {
-            type = "fixed",
-            fixed = {
-                {-0.5, -0.5, -0.5, -0.5+1*def.length, 0.5, 0.5},
-            },
-        }
-    end
+    node_def.selection_box = {
+        type = "fixed",
+        fixed = {
+            {-0.5, -0.5, -0.5, -0.5+1*width, -0.5+1*def.height, 0.5},
+        },
+    }
+    node_def.collision_box = {
+        type = "fixed",
+        fixed = {
+            {-0.5, -0.5, -0.5, -0.5+1*width, -0.5+1*def.height, 0.5},
+        },
+    }
 
     if not def.self_sufficient then
         local decayed_node_def = table.copy(node_def)
@@ -177,9 +160,11 @@ end
 city.register_building("city:house_long_a", {
     mesh = "city_house_long_a",
     width = 2,
+    height = 0.75,
     self_sufficient = true, 
     kind = "house",
 })
-city.register_building("city:house_a", {mesh = "city_house_a", kind = "house"})
-city.register_building("city:house_b", {mesh = "city_house_b", kind = "house"})
-city.register_building("city:house_c", {mesh = "city_house_c", kind = "house"})
+city.register_building("city:house_a", {height = 0.7, mesh = "city_house_a", kind = "house"})
+city.register_building("city:house_b", {height = 0.6, mesh = "city_house_b", kind = "house"})
+city.register_building("city:house_c", {height = 0.8, mesh = "city_house_c", kind = "house"})
+city.register_building("city:skyscraper_a", {height = 2.9, mesh = "city_skyscraper_a", kind = "skyscraper"})

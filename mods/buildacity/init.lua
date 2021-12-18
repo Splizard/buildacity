@@ -44,11 +44,15 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
         if string.match(node.name,"skyscraper") then
             income = 10
         end
+        local height = minetest.get_item_group(node.name, "height")
+        if height == 0 then
+            height = 1
+        end
         AddPlayerCoins(puncher, income)
         minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-decayed_suffix_len), param2 = node.param2})
         minetest.sound_play("buildacity_income", {pos = pos, max_hear_distance = 20})
         minetest.add_particle({
-            pos={x=pos.x, y=pos.y, z=pos.z},
+            pos={x=pos.x, y=pos.y-(2.9-height), z=pos.z},
             velocity={x=0, y=16, z=0},
             acceleration={x=0,y=-42,z=0},
             texture = "buildacity_coin.png",
@@ -134,7 +138,9 @@ minetest.is_protected = function(pos, name)
 end
 
 minetest.register_on_placenode(function(pos, newnode, placer, oldnode, itemstack, pointed_thing)
-    AddPlayerEnergy(placer, -minetest.get_item_group(newnode.name, "cost"))
+    if string.match(newnode.name, "city:road.*") then
+        AddPlayerEnergy(placer, -2)
+    end
     return true -- we don't have an inventory in this game, so we never remove items from the hotbar.
 end)
 
@@ -146,7 +152,7 @@ minetest.register_item(":", {
 minetest.register_on_respawnplayer(function(player)
     player:get_meta():set_int("coins", 0);
     player:hud_change(coins_count, "text", 0)
-    AddPlayerEnergy(player, 5) --update HUD.
+    AddPlayerEnergy(player, (-player:get_meta():get_int("energy"))+5)
 end)
 
 --We need to attach the Energy and Humans HUD counts.
@@ -160,7 +166,7 @@ minetest.register_on_joinplayer(function(player)
     local list = {
         "city:road 1",
         "buildacity:house 1",
-        "city:skyscraper 1",
+        "buildacity:skyscraper 1",
         "buildacity:coins 1",
         "buildacity:destroyer 1", 
     }
@@ -176,22 +182,22 @@ minetest.register_on_joinplayer(function(player)
     --Brain Icon.
     player:hud_add({
         hud_elem_type = "statbar",
-        position = {x=0, y=0},
+        position = {x=1, y=0},
         text = "buildacity_coin.png",
         number = 2,
         size = {x=64, y=64},
-        offset = {x=10, y=0},
+        offset = {x=-64-10, y=0},
     })
     --Brain Count
     player:hud_add({
         name = "coins",
         hud_elem_type = "text",
-        position = {x=0, y=0},
+        position = {x=1, y=0},
         text = player:get_meta():get_int("coins"),
         number = 0xffffff,
         size = {x=3, y=3},
-        offset = {x=90, y=5},
-        alignment = {x=1, y=1},
+        offset = {x=-90, y=5},
+        alignment = {x=-1, y=1},
     })
     --Energy Count
     player:hud_add({
@@ -201,7 +207,7 @@ minetest.register_on_joinplayer(function(player)
         text = math.floor(player:get_meta():get_float("energy")+0.5),
         number = 0xffffff,
         size = {x=3, y=3},
-        offset = {x=-80, y=5},
+        offset = {x=-80, y=64+5},
         alignment = {x=-1, y=1},
     })
     --Energy Icon
@@ -211,7 +217,7 @@ minetest.register_on_joinplayer(function(player)
         text = "buildacity_energy.png",
         number = 2,
         size = {x=48, y=48},
-        offset = {x=-64, y=7},
+        offset = {x=-64, y=64+7},
     })
     
 
@@ -323,7 +329,6 @@ minetest.register_item("buildacity:coins", {
     end
 })
 
---Spanner is used to fix broken power sources.
 minetest.register_item("buildacity:house", {
     description = S("House"),
     inventory_image = "buildacity_house.png",
@@ -337,6 +342,20 @@ minetest.register_item("buildacity:house", {
     end
 })
 
+minetest.register_item("buildacity:skyscraper", {
+    description = S("Skyscraper"),
+    inventory_image = "buildacity_skyscraper.png",
+    type = "tool",
+    on_place = function(itemstack, user, pointed_thing)
+        if pointed_thing.type == "node" then
+            if city.build("skyscraper", pointed_thing.above, user) then
+                AddPlayerEnergy(user, -100)
+            end
+        end
+    end
+})
+
+
 --Destroyer is used to destroy built nodes such as roads and buildings.
 minetest.register_item("buildacity:destroyer", {
     description = S("Destroyer"),
@@ -348,12 +367,14 @@ minetest.register_item("buildacity:destroyer", {
 
             if minetest.is_protected(pos, user:get_player_name()) then
                 minetest.record_protection_violation(pos, user:get_player_name())
+                minetest.sound_play("buildacity_error", {pos = pointed_thing.below, max_hear_distance = 20})
                 return
             end
 
             local node = minetest.get_node(pos)
-            if minetest.get_item_group(node.name, "cost") > 0 then
+            if minetest.get_item_group(node.name, "flammable") > 0 and PlayerCanAfford(user, 1) then
                 AddPlayerEnergy(user, -5)
+                AddPlayerCoins(user, -1)
 
                 --'explode' the node.
                 minetest.set_node(pos, {name = "air"})
@@ -372,6 +393,8 @@ minetest.register_item("buildacity:destroyer", {
                 })
                 minetest.sound_play("buildacity_explode", {pos = pos, max_hear_distance = 20})
                 city.update_roads(pos)
+            else
+                minetest.sound_play("buildacity_error", {pos = pointed_thing.below, max_hear_distance = 20})
             end
         end
     end
