@@ -34,6 +34,7 @@ a modder, submit a PR!
 
 ## Minetest Engine Wishlist
 * Meshlike particles
+* Change chat/log position
 
 ## License
 This project is licensed under the The Qlovatech Community Trademark License 1.0
