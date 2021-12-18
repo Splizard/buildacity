@@ -146,8 +146,7 @@ minetest.register_item(":", {
 minetest.register_on_respawnplayer(function(player)
     player:get_meta():set_int("coins", 0);
     player:hud_change(coins_count, "text", 0)
-    player:get_meta():set_float("energy", 0) -- :( no more energy
-    AddPlayerEnergy(player, 0) --update HUD.
+    AddPlayerEnergy(player, 5) --update HUD.
 end)
 
 --We need to attach the Energy and Humans HUD counts.

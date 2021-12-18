@@ -156,7 +156,7 @@ function city.register_building(name, def)
     --setup a node timer that will decay the building
     --after a random amount of time.
     node_def.on_construct = function(pos, placer, itemstack, pointed_thing)
-        minetest.get_node_timer(pos):start(math.random(1, 60))
+        minetest.get_node_timer(pos):start(math.random(1, 60*5))
 
         if width > 1 then
             local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
