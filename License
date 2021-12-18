@@ -56,21 +56,21 @@ following conditions:
 
    (b) Reorder the Notices.  
 
-   (c) Remove a Notice from your copy of This Project the written consent 
-       of the copyright holder.
+   (c) Remove a Notice from your copy of This Project with the written 
+       consent of the copyright holder.
 
    (d) Merge Notices verbatim with another set of Notices. Each Community 
        Trademark before the merge must remain a Community Trademark after
        the merge. You must make a reasonable effort to research and resolve 
        conflicts by awarding trademarks to the Trademark Owner (to your best 
        judgement). A trademark must not be removed from the Attached Notices
-       in this way.
+       this way.
 
-5. You may not use the name of any (other) Listed Providers nor any of their 
+5. You may not use the name of any (other) Providers nor any of their 
    Community Trademarks, to title, endorse or promote, any products, 
    projects, works, performances and/or services derived from, or otherwise 
    featuring This Project unless You have the prior written consent from, 
-   or the publicly documented permission from the Listed Provider.
+   or the publicly documented permission from the Provider.
 
    However this condition cannot (and does not) prevent You from:
 
@@ -79,7 +79,7 @@ following conditions:
        derived from, and/or otherwise featuring This Project as long as 
        those words are used in good faith and for their natural meanings 
        and are not used in an attempt to capitalise on the reference to 
-       any (other) Listed Provider's Community Trademarks.
+       any (other) Provider's Community Trademarks.
 
    (b) "Nominative Fair Use" which means using a Provider's Community 
        Trademark to review and/or draw comparison to Derived Products.
@@ -116,10 +116,10 @@ litigate against and/or otherwise seek and collect damages from You.
 
     (b) the copyright holder who lawfully acquired 
         the rights to the trademark from the previous
-        Rightful Trademark Owner.
+        Trademark Owner.
         
     (c) the copyright holder who was awarded the
-        he trademark through legal proceedings.
+        trademark through legal proceedings.
 
 "The Attached Notices" means either:
 
@@ -192,7 +192,7 @@ litigate against and/or otherwise seek and collect damages from You.
         third party Platform or its owner (including but not limited to, the 
         Platform itself, a Software Development Kit or an Application 
         Programming Interface) that is designed to allow third party works to 
-        be Operated on that Platform.s
+        be Operated on that Platform.
 
    (b) "Platform Protected Work", which means any part of This Project that is 
         protected from disclosure or distribution because of an agreement with
@@ -201,9 +201,9 @@ litigate against and/or otherwise seek and collect damages from You.
         standard interface, in order to enable The Project to be Operated on 
         that Platform.
 
-   (c) "Mods or The Larger Project", which means any larger work where the 
+   (c) "Mods or Larger Projects", which means any larger work where the 
         preferred form of making changes to that work are kept external and 
-        separate from The Source Code and where the work depends upon and/or 
+        separate from The Source Code and where that work depends upon and/or 
         embeds This Project in such a way that This Project (including any of 
         Your Modifications) can be meaningfully separated from the Larger Work 
         and This Project can continue to function and remain useful for its 
@@ -221,10 +221,11 @@ litigate against and/or otherwise seek and collect damages from You.
        or '(R)', and
 
    (b) It is unique and "Distinguishable" (a reasonable person will not 
-       confuse the trademark with another Listed Provider's Community Trademark).
+       confuse the trademark with an earlier Provider's Community 
+       Trademark).
 
-   (c) It was added in good faith and represents a genuine mark that is being
-       used for a Derived Product.
+   (c) It was added in good faith and represents a genuine mark to 
+       be used for a Derived Product.
 
 THERE IS NO WARRANTY FOR THIS PROJECT, TO THE EXTENT PERMITTED BY APPLICABLE 
 LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER 
@@ -260,10 +261,10 @@ Exhibit A:
   changes and respect the community trademarks. See the https://qlova.tech/ctl/1.0
 
 Quick Tip: If You are building a Mod or Larger Project and You are depending on 
-an unmodified copy of This Project from a Listed Provider, you can simply name This 
+an unmodified copy of This Project from a Listed Provider, you may simply name This 
 License and refer to the Listed Provider's Community Trademark. See Exhibit B for
 an example. Just make sure the information is specific enough so that interested
-users can find the Listed Provider's copy of The Source Code to This Project.
+users can find the Listed Provider's copy of The Source Code.
 
 Exhibit B:
   This project has been built [for/with] [Community Trademark] which is licensed 
