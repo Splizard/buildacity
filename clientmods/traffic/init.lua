@@ -1,11 +1,11 @@
 local cars = {}
 
 minetest.register_on_punchnode(function (pos, node, puncher)
-    table.insert(cars, {pos = pos, last_update=0})
+    --table.insert(cars, {pos = pos, last_update=0})
 end)
 
 minetest.register_globalstep(function (dtime)
-    for i, car in ipairs(cars) do
+    --[[for i, car in ipairs(cars) do
         local pos = car.pos
 
         if cars[i].last_update > 0.1 then
@@ -26,5 +26,5 @@ minetest.register_globalstep(function (dtime)
 
         cars[i].last_update = cars[i].last_update + dtime
        
-    end
+    end]]--
 end)

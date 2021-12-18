@@ -97,7 +97,6 @@ function city.register_building(name, def)
         paramtype2 = "facedir",
         groups = {
             flammable = 1,
-            cost = def.cost or 1,
             width = def.width,
         },
         node_placement_prediction = "",
@@ -178,7 +177,7 @@ end
 city.register_building("city:house_long_a", {
     mesh = "city_house_long_a",
     width = 2,
-    self_sufficient = true,
+    self_sufficient = true, 
     kind = "house",
 })
 city.register_building("city:house_a", {mesh = "city_house_a", kind = "house"})

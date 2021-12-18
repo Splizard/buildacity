@@ -1,9 +1,9 @@
---bigpowercorp implements the gameplay logic of Build a City.
+--buildacity implements the gameplay logic of Build a City.
 --In this gamemode, players have energy and are required to build
---cities so that they can collect coins and maintain bigpowercorp's
+--cities so that they can collect coins and maintain BigPowerCorp's
 --electricity generation infrastructure.
 
-local S = minetest.get_translator("bigpowercorp")
+local S = minetest.get_translator("buildacity")
 
 local coins_count = 1;
 local energy_count = 2;
@@ -37,14 +37,21 @@ local broken_suffix_len = #"_broken"
 
 minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
     if string.match(node.name, "city:.*_decayed") then
-        AddPlayerCoins(puncher, 1)
+        local income = 1
+        if string.match(node.name,"house") then
+            income = 2
+        end
+        if string.match(node.name,"skyscraper") then
+            income = 10
+        end
+        AddPlayerCoins(puncher, income)
         minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-decayed_suffix_len), param2 = node.param2})
-        minetest.sound_play("bigpowercorp_income", {pos = pos, max_hear_distance = 20})
+        minetest.sound_play("buildacity_income", {pos = pos, max_hear_distance = 20})
         minetest.add_particle({
             pos={x=pos.x, y=pos.y, z=pos.z},
             velocity={x=0, y=16, z=0},
             acceleration={x=0,y=-42,z=0},
-            texture = "bigpowercorp_coin.png",
+            texture = "buildacity_coin.png",
             size = 8,
             playername = puncher:get_player_name(),
         })
@@ -60,10 +67,10 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
                 AddPlayerEnergy(puncher, energy)
             end
         end, energy)
-        minetest.sound_play("bigpowercorp_charge", {pos = pos, max_hear_distance = 20})
+        minetest.sound_play("buildacity_charge", {pos = pos, max_hear_distance = 20})
     end
     if string.match(node.name, "city:.*_disabled") then
-        minetest.sound_play("bigpowercorp_broken", {pos = pos, max_hear_distance = 20})
+        minetest.sound_play("buildacity_broken", {pos = pos, max_hear_distance = 20})
         minetest.add_particlespawner({
             amount = 20,
             time = 0.3,
@@ -71,7 +78,7 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
             maxpos={x=pos.x+0.5, y=pos.y-0.5, z=pos.z+0.5},
             minvel={x=-4, y=2, z=-4},
             maxvel={x=4, y=4, z=4},
-            texture = "bigpowercorp_energy.png",
+            texture = "buildacity_energy.png",
             minsize = 1,
             maxsize = 1,
             minexptime = 0.2,
@@ -86,7 +93,7 @@ minetest.register_globalstep(function(dt)
     for _, player in ipairs(minetest.get_connected_players()) do
         if player:get_hp() > 0 then
             local controls = player:get_player_control() 
-            if controls.aux1 then
+            if controls.aux1 and player:get_meta():get_float("energy") > 0 then --Speed boost costs energy.
                 player:set_physics_override({
                     speed = 4,
                 })
@@ -95,7 +102,6 @@ minetest.register_globalstep(function(dt)
                 player:set_physics_override({
                     speed = 1,
                 })
-                AddPlayerEnergy(player,  - dt * 1/60)
             end
         end
     end
@@ -140,7 +146,8 @@ minetest.register_item(":", {
 minetest.register_on_respawnplayer(function(player)
     player:get_meta():set_int("coins", 0);
     player:hud_change(coins_count, "text", 0)
-    AddPlayerEnergy(player, 50)
+    player:get_meta():set_float("energy", 0) -- :( no more energy
+    AddPlayerEnergy(player, 0) --update HUD.
 end)
 
 --We need to attach the Energy and Humans HUD counts.
@@ -153,26 +160,25 @@ minetest.register_on_joinplayer(function(player)
 
     local list = {
         "city:road 1",
-        "bigpowercorp:house 1",
+        "buildacity:house 1",
         "city:skyscraper 1",
-        "bigpowercorp:spanner 1",
-        "bigpowercorp:destroyer 1", 
+        "buildacity:coins 1",
+        "buildacity:destroyer 1", 
     }
 
     --Initialise the buildbar (hotbar).
     player:get_inventory():set_list("main", list)
     player:hud_set_hotbar_itemcount(#list)
-    player:set_inventory_formspec("size[6,3]label[0.05,0.05;BigPowerCorp Employee Handbook]button_exit[0.8,2;1.5,0.8;close;Close]label[0.05,1.5;There is nothing here]")
 
     --Remove default HUD elements.
     player:hud_set_flags({healthbar=false, breathbar=false, wielditem=false})
-    player:hud_set_hotbar_image("bigpowercorp_empty.png")
+    player:hud_set_hotbar_image("buildacity_empty.png")
 
     --Brain Icon.
     player:hud_add({
         hud_elem_type = "statbar",
         position = {x=0, y=0},
-        text = "bigpowercorp_coin.png",
+        text = "buildacity_coin.png",
         number = 2,
         size = {x=64, y=64},
         offset = {x=10, y=0},
@@ -203,7 +209,7 @@ minetest.register_on_joinplayer(function(player)
     player:hud_add({
         hud_elem_type = "statbar",
         position = {x=1, y=0},
-        text = "bigpowercorp_energy.png",
+        text = "buildacity_energy.png",
         number = 2,
         size = {x=48, y=48},
         offset = {x=-64, y=7},
@@ -216,8 +222,8 @@ minetest.register_on_joinplayer(function(player)
         eye_height = 0.2,
         collisionbox = {-0.3, 0.0, -0.3, 0.3, 0.3, 0.3},
         visual = "mesh",
-        mesh = "bigpowercorp_craft_default.obj",
-        textures = {"bigpowercorp_craft_default.png", "bigpowercorp_craft_default_highlight.png"},
+        mesh = "buildacity_craft_default.obj",
+        textures = {"buildacity_craft_default.png", "buildacity_craft_default_highlight.png"},
     })
     player:set_eye_offset(nil, {x=0,y=0,z=10})
     local name = player:get_player_name()
@@ -259,7 +265,7 @@ end)
 --Wind turbines provided by BigPowerCorp.
 --They only spawn on hills (we assume flat mapgen from polymap).
 minetest.register_decoration({
-    name = "bigpowercorp:wind_turbine",
+    name = "buildacity:wind_turbine",
     deco_type = "schematic",
     place_on = {"polymap:grass"},
     sidelen = 2,
@@ -289,7 +295,7 @@ minetest.register_decoration({
 
 --Roads are starting points, where a player can start building from.
 minetest.register_decoration({
-    name = "bigpowercorp:road",
+    name = "buildacity:road",
     deco_type = "simple",
     place_on = {"polymap:grass"},
     fill_ratio = 0.0005,
@@ -300,42 +306,42 @@ minetest.register_decoration({
 })
 
 --Spanner is used to fix broken power sources.
-minetest.register_item("bigpowercorp:spanner", {
+minetest.register_item("buildacity:coins", {
     description = S("Spanner"),
-    inventory_image = "bigpowercorp_spanner.png",
+    inventory_image = "buildacity_coin.png",
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
             local pos = pointed_thing.under
             local node = minetest.get_node(pos)
-            if PlayerCanAfford(user, 5) then
-                if city.enable(pos) then
-                    minetest.sound_play("bigpowercorp_repair", {pos = pos, max_hear_distance = 20})
+            if PlayerCanAfford(user, 5) and city.enable(pos) then
+                    minetest.sound_play("buildacity_pay", {pos = pos, max_hear_distance = 20})
                     AddPlayerCoins(user, -5)
-                end
             else
-                minetest.sound_play("bigpowercorp_error", {pos = pos, max_hear_distance = 20})
+                minetest.sound_play("buildacity_error", {pos = pos, max_hear_distance = 20})
             end
         end
     end
 })
 
 --Spanner is used to fix broken power sources.
-minetest.register_item("bigpowercorp:house", {
+minetest.register_item("buildacity:house", {
     description = S("House"),
-    inventory_image = "bigpowercorp_house.png",
+    inventory_image = "buildacity_house.png",
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
-            city.build("house", pointed_thing.above, user)
+            if city.build("house", pointed_thing.above, user) then
+                AddPlayerEnergy(user, -5)
+            end
         end
     end
 })
 
 --Destroyer is used to destroy built nodes such as roads and buildings.
-minetest.register_item("bigpowercorp:destroyer", {
+minetest.register_item("buildacity:destroyer", {
     description = S("Destroyer"),
-    inventory_image = "bigpowercorp_destroyer.png",
+    inventory_image = "buildacity_destroyer.png",
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
@@ -359,15 +365,19 @@ minetest.register_item("bigpowercorp:destroyer", {
                     maxpos={x=pos.x+0.5, y=pos.y-0.5, z=pos.z+0.5},
                     minvel={x=-4, y=2, z=-4},
                     maxvel={x=4, y=4, z=4},
-                    texture = "bigpowercorp_craft_default.png",
+                    texture = "buildacity_craft_default.png",
                     minsize = 1,
                     maxsize = 1,
                     minexptime = 0.2,
                     maxexptime = 0.2,
                 })
-                minetest.sound_play("bigpowercorp_explode", {pos = pos, max_hear_distance = 20})
+                minetest.sound_play("buildacity_explode", {pos = pos, max_hear_distance = 20})
                 city.update_roads(pos)
             end
         end
     end
 })
+
+
+local modpath = minetest.get_modpath("buildacity")
+dofile(modpath.."/handbook.lua")
