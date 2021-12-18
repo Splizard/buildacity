@@ -1,9 +1,9 @@
---buildacity implements the gameplay logic of Build a City.
+--builda implements the gameplay logic of Builda City.
 --In this gamemode, players have energy and are required to build
---cities so that they can collect coins and maintain BigPowerCorp's
---electricity generation infrastructure.
+--cities so that they can collect coins and profit from the global
+--energy supply infrastructure.
 
-local S = minetest.get_translator("buildacity")
+local S = minetest.get_translator("builda")
 
 local coins_count = 1;
 local energy_count = 2;
@@ -50,12 +50,12 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
         end
         AddPlayerCoins(puncher, income)
         minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-decayed_suffix_len), param2 = node.param2})
-        minetest.sound_play("buildacity_income", {pos = pos, max_hear_distance = 20})
+        minetest.sound_play("builda_income", {pos = pos, max_hear_distance = 20})
         minetest.add_particle({
             pos={x=pos.x, y=pos.y-(2.9-height), z=pos.z},
             velocity={x=0, y=16, z=0},
             acceleration={x=0,y=-42,z=0},
-            texture = "buildacity_coin.png",
+            texture = "builda_coin.png",
             size = 8,
             playername = puncher:get_player_name(),
         })
@@ -71,10 +71,10 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
                 AddPlayerEnergy(puncher, energy)
             end
         end, energy)
-        minetest.sound_play("buildacity_charge", {pos = pos, max_hear_distance = 20})
+        minetest.sound_play("builda_charge", {pos = pos, max_hear_distance = 20})
     end
     if string.match(node.name, "city:.*_disabled") then
-        minetest.sound_play("buildacity_broken", {pos = pos, max_hear_distance = 20})
+        minetest.sound_play("builda_broken", {pos = pos, max_hear_distance = 20})
         minetest.add_particlespawner({
             amount = 20,
             time = 0.3,
@@ -82,7 +82,7 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
             maxpos={x=pos.x+0.5, y=pos.y-0.5, z=pos.z+0.5},
             minvel={x=-4, y=2, z=-4},
             maxvel={x=4, y=4, z=4},
-            texture = "buildacity_energy.png",
+            texture = "builda_energy.png",
             minsize = 1,
             maxsize = 1,
             minexptime = 0.2,
@@ -165,10 +165,10 @@ minetest.register_on_joinplayer(function(player)
 
     local list = {
         "city:road 1",
-        "buildacity:house 1",
-        "buildacity:skyscraper 1",
-        "buildacity:coins 1",
-        "buildacity:destroyer 1", 
+        "builda:house 1",
+        "builda:skyscraper 1",
+        "builda:coins 1",
+        "builda:destroyer 1", 
     }
 
     --Initialise the buildbar (hotbar).
@@ -177,13 +177,13 @@ minetest.register_on_joinplayer(function(player)
 
     --Remove default HUD elements.
     player:hud_set_flags({healthbar=false, breathbar=false, wielditem=false})
-    player:hud_set_hotbar_image("buildacity_empty.png")
+    player:hud_set_hotbar_image("builda_empty.png")
 
     --Brain Icon.
     player:hud_add({
         hud_elem_type = "statbar",
         position = {x=1, y=0},
-        text = "buildacity_coin.png",
+        text = "builda_coin.png",
         number = 2,
         size = {x=64, y=64},
         offset = {x=-64-10, y=0},
@@ -214,7 +214,7 @@ minetest.register_on_joinplayer(function(player)
     player:hud_add({
         hud_elem_type = "statbar",
         position = {x=1, y=0},
-        text = "buildacity_energy.png",
+        text = "builda_energy.png",
         number = 2,
         size = {x=48, y=48},
         offset = {x=-64, y=64+7},
@@ -227,8 +227,8 @@ minetest.register_on_joinplayer(function(player)
         eye_height = 0.2,
         collisionbox = {-0.3, 0.0, -0.3, 0.3, 0.3, 0.3},
         visual = "mesh",
-        mesh = "buildacity_craft_default.obj",
-        textures = {"buildacity_craft_default.png", "buildacity_craft_default_highlight.png"},
+        mesh = "builda_craft_default.obj",
+        textures = {"builda_craft_default.png", "builda_craft_default_highlight.png"},
     })
     player:set_eye_offset(nil, {x=0,y=0,z=10})
     local name = player:get_player_name()
@@ -270,7 +270,7 @@ end)
 --Wind turbines provided by BigPowerCorp.
 --They only spawn on hills (we assume flat mapgen from polymap).
 minetest.register_decoration({
-    name = "buildacity:wind_turbine",
+    name = "builda:wind_turbine",
     deco_type = "schematic",
     place_on = {"polymap:grass"},
     sidelen = 2,
@@ -300,7 +300,7 @@ minetest.register_decoration({
 
 --Roads are starting points, where a player can start building from.
 minetest.register_decoration({
-    name = "buildacity:road",
+    name = "builda:road",
     deco_type = "simple",
     place_on = {"polymap:grass"},
     fill_ratio = 0.0005,
@@ -311,27 +311,27 @@ minetest.register_decoration({
 })
 
 --Spanner is used to fix broken power sources.
-minetest.register_item("buildacity:coins", {
+minetest.register_item("builda:coins", {
     description = S("Spanner"),
-    inventory_image = "buildacity_coin.png",
+    inventory_image = "builda_coin.png",
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
             local pos = pointed_thing.under
             local node = minetest.get_node(pos)
             if PlayerCanAfford(user, 5) and city.enable(pos) then
-                    minetest.sound_play("buildacity_pay", {pos = pos, max_hear_distance = 20})
+                    minetest.sound_play("builda_pay", {pos = pos, max_hear_distance = 20})
                     AddPlayerCoins(user, -5)
             else
-                minetest.sound_play("buildacity_error", {pos = pos, max_hear_distance = 20})
+                minetest.sound_play("builda_error", {pos = pos, max_hear_distance = 20})
             end
         end
     end
 })
 
-minetest.register_item("buildacity:house", {
+minetest.register_item("builda:house", {
     description = S("House"),
-    inventory_image = "buildacity_house.png",
+    inventory_image = "builda_house.png",
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
@@ -342,9 +342,9 @@ minetest.register_item("buildacity:house", {
     end
 })
 
-minetest.register_item("buildacity:skyscraper", {
+minetest.register_item("builda:skyscraper", {
     description = S("Skyscraper"),
-    inventory_image = "buildacity_skyscraper.png",
+    inventory_image = "builda_skyscraper.png",
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
@@ -357,9 +357,9 @@ minetest.register_item("buildacity:skyscraper", {
 
 
 --Destroyer is used to destroy built nodes such as roads and buildings.
-minetest.register_item("buildacity:destroyer", {
+minetest.register_item("builda:destroyer", {
     description = S("Destroyer"),
-    inventory_image = "buildacity_destroyer.png",
+    inventory_image = "builda_destroyer.png",
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
@@ -367,7 +367,7 @@ minetest.register_item("buildacity:destroyer", {
 
             if minetest.is_protected(pos, user:get_player_name()) then
                 minetest.record_protection_violation(pos, user:get_player_name())
-                minetest.sound_play("buildacity_error", {pos = pointed_thing.below, max_hear_distance = 20})
+                minetest.sound_play("builda_error", {pos = pointed_thing.below, max_hear_distance = 20})
                 return
             end
 
@@ -385,21 +385,21 @@ minetest.register_item("buildacity:destroyer", {
                     maxpos={x=pos.x+0.5, y=pos.y-0.5, z=pos.z+0.5},
                     minvel={x=-4, y=2, z=-4},
                     maxvel={x=4, y=4, z=4},
-                    texture = "buildacity_craft_default.png",
+                    texture = "builda_craft_default.png",
                     minsize = 1,
                     maxsize = 1,
                     minexptime = 0.2,
                     maxexptime = 0.2,
                 })
-                minetest.sound_play("buildacity_explode", {pos = pos, max_hear_distance = 20})
+                minetest.sound_play("builda_explode", {pos = pos, max_hear_distance = 20})
                 city.update_roads(pos)
             else
-                minetest.sound_play("buildacity_error", {pos = pointed_thing.below, max_hear_distance = 20})
+                minetest.sound_play("builda_error", {pos = pointed_thing.below, max_hear_distance = 20})
             end
         end
     end
 })
 
 
-local modpath = minetest.get_modpath("buildacity")
-dofile(modpath.."/handbook.lua")
+local modpath = minetest.get_modpath("builda")
+dofile(modpath.."/guide.lua")
