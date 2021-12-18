@@ -6,7 +6,7 @@ A multiplayer city-building game running on the Minetest Engine.
 
 ## Quick Rundown
 You've been employed by a company with plenty of energy to
-sell but no customers to sell it to! It's your job
+sell but no customers to sell it to! It's your jobz
 to Build a City so that you can make some cash!
 
 ## Quick Start
@@ -18,6 +18,13 @@ Buildings consume energy and eventually they run out and need to be
 charged up, click on a building to charge it. You will collect 
 coins this way. Use these coins to fix broken energy sources 
 so that you can survive and expand your city!
+
+## Assets
+The assets for this game have been sourced from various CC0 sources.
+The houses, buildings and roads are by Kenny [https://kenney.nl]. 
+The sounds have been sourced from Freesound [https://freesound.org].
+
+The wind turbine is made by me.
 
 ## Features Wishlist / Roadmap
 A list of features that would be nice to have, if you are
