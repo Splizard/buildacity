@@ -7,12 +7,15 @@ make available, feature, modify, display, perform, distribute, and/or
 otherwise exploit Your copy of This Project for *any purpose* subject to 
 the following conditions:
       
-1. If at any time, You Share a copy of This Project (with or without 
-   Modifications) to any third party (and You are not making an Official 
-   Release) then You must ensure that The Source Code, The License and 
-   Dependencies of that copy are Readily Obtainable and Clearly 
-   Discoverable by that third party for at least 30 days after you 
-   last Shared this copy of The Project to them.
+1. Whenever You Share a copy of This Project to any other party You 
+   must ensure at least one of the following is true:
+   
+    (a) The Buildable Source is Readily Obtainable and Clearly Discoverable 
+        by that party on a public Distribution Channel of Your choice.
+
+    (b) The copy you are sharing is an Official Release.
+
+    (c) The Buildable Source is being Shared along with The Project.
    
 2. You may not restrict in any way, the rights This License grants to 
    any users or Publishers of The Project (except when they have made an 
@@ -25,25 +28,25 @@ the following conditions:
        exercise their rights to any Modifications You may have made.
 
    (b) not to obfuscate, omit, and/or obstruct in any way This License, The 
-       Source Code and/or Dependencies of This Project and/or the ability 
-       for a third party to find, acquire and/or obtain it, either in bad 
-       faith, and/or to circumvent the terms and conditions of This License.
+       Buildable Source of This Project and/or the ability for another party 
+       to find, acquire and/or obtain it, either in bad faith, and/or to 
+       circumvent the terms and conditions of This License.
 
 3. When making Modifications to This Project You must decide whether or 
    not to become or remain a Publisher and either:
    
    (a) You agree to become or remain a Publisher and You agree to maintain 
-       Your Notice in The Attached Notices and, for at least 30 days, and 
-       as long as You continue to make Official Releases to third parties, 
-       You must ensure that The Source Code of Your Official Releases are, 
-       Readily Obtainable and Clearly Discoverable, by the general public.
+       Your Notice in The Attached Notices and You, for as long as You 
+       continue to Share Official Releases to other parties, must 
+       ensure that The Source Code of Your Official Releases are Readily 
+       Obtainable and Clearly Discoverable, by the general public.
 
    (b) You do not agree to become or remain a Publisher and You agree, to 
        omit/remove Your Notice from The Attached Notices and agree that 
        This Project (including any Modifications You may have made) may 
-       be relicensed upon the written agreement between each Publisher 
-       under the terms of an agreed upon Open Source License (or at any 
-       time if there are no Publishers). 
+       be relicensed upon the written agreement between each remaining
+       Publisher under the terms of an agreed upon Open Source License 
+       (or at any time if there are no remaining Publishers). 
 
 4. You may not modify the Attached Notices, except to:
 
@@ -51,21 +54,21 @@ the following conditions:
 
    (b) Reorder, relocate and/or format the Notices.
 
-   (c) Modify/remove a Notice with written consent from the Notice's
+   (c) Modify/remove a Notice with the written consent of the Notice's
        copyright holder.
 
    (d) Merge Notices verbatim with another set of Notices. Each Community 
        Trademark before the merge must remain a Community Trademark after
        the merge, so you must make a reasonable effort to research and 
-       resolve conflicts by awarding the trademarks to the Trademark Owner 
-       (to Your best judgement). A trademark may not be removed from the 
-       Attached Notices this way.
+       resolve trademark conflicts by awarding conflicting trademarks to 
+       a single Trademark Owner (to Your best judgement). A trademark may 
+       not be removed from the Attached Notices this way.
 
 5. You may not use the name of any (other) Publishers nor any of their 
    Community Trademarks, to title, endorse or promote, any of Your products, 
    projects, works, performances and/or services derived from, or otherwise 
    featuring This Project unless You have the prior written consent from, 
-   or the publicly documented permission from the Publisher.
+   or the publicly documented permission from that Publisher.
 
    However this condition cannot (and does not) prevent You from:
 
@@ -83,17 +86,17 @@ the following conditions:
    (c) "Contributing" which means that as long as Your copy remains a 
         Contribution You are not required to remove any Community 
         Trademarks that existed in The Project (as You received it)
-        in order to Share it.
+        before you Share it.
        
 In the event that You breach a condition of This License, You must take 
 immediate steps to resolve this breach and, until You resolve this breach, 
 any rights granted to You by This License (except for the rights to display 
-and distribute The Source Code and Dependencies) are automatically 
-terminated, however, the conditions of This License will continue to apply to 
-You and any third party who has agreed to This License, may, on behalf of 
-each copyright holder, and only in good faith and to ensure the fairness, 
-integrity, precedent and/or compliance of This License, contact, sue, 
-litigate against and/or otherwise seek and collect damages from You.
+and distribute The Buildable Source) are automatically terminated, however, 
+the conditions of This License will continue to apply to You and any third 
+party who has agreed to This License, may, on behalf of each copyright 
+holder, and only in good faith and to ensure the fairness, integrity, 
+precedent and/or compliance of This License, contact, sue, litigate against 
+and/or otherwise seek and collect damages from You.
 
 "This License" (or "The License") means version 1.0 (or later) of The 
  Qlovatech Community Trademark License. Qlova may release new versions of 
@@ -107,17 +110,20 @@ litigate against and/or otherwise seek and collect damages from You.
 "Official Release" means a copy of This Project Shared by a Publisher
  and is referred to by one of their Community Trademarks.
 
-"Trademark Owner" means either:
+"Trademark Owner" means either (considered in this order):
 
-    (a) the copyright holder with the earliest 
-        known use of the trademark.
+    (1) the copyright holder who was awarded the
+        trademark through legal proceedings, otherwise
 
-    (b) the copyright holder who lawfully acquired 
+    (2) the copyright holder who lawfully acquired 
         the rights to the trademark from the previous
-        Trademark Owner.
-        
-    (c) the copyright holder who was awarded the
-        trademark through legal proceedings.
+        Trademark Owner, otherwise
+
+    (3) the copyright holder with an existing 
+        trademark that is substantially similar, otherwise
+
+    (4) the copyright holder with the earliest 
+        known use of the trademark.
 
 "The Attached Notices" means either:
 
@@ -151,8 +157,8 @@ litigate against and/or otherwise seek and collect damages from You.
  For example, when the work is used by a service that is being interacted
  with across a computer network in order to serve requests.
 
-"Clearly Discoverable" means existing at a standard or reasonable location 
- such that any interested party can find it.
+"Clearly Discoverable" means existing at a standard, documented or reasonable 
+ location such that any interested party can find it.
 
 "Readily Obtainable" means publicly available or available on request at 
  a fee no more than the cost of distribution.
@@ -174,33 +180,35 @@ litigate against and/or otherwise seek and collect damages from You.
 "Operated" means reproduced, ported, performed, embedded, featured, operated, 
  used, ran, displayed and/or distributed.
 
-"The Source Code" means a file, directory and/or other standard format 
- for distribution, that contains the preferred form of making changes to This 
- Project and includes The Attached Notices and is licensed under the terms of 
+"Source" means the preferred form of making changes.
+
+"The Buildable Source" means a file, directory and/or other standard format 
+ for distribution, that contains the Source for This Project and includes 
+ The Attached Notices, the Dependencies and is licensed under the terms of 
  This License which is included in a Clearly Discoverable location.
 
-"Contribution" means any of Your copies of The Project where:
+"Contribution" means a copy of The Project within Your control where:
 
     (a) Your Modifications are clearly documented and Your name is
         associated with the copy, and
 
     (b) A Listed Publisher has not requested that You remove 
-        their Community Trademarks from Your copy, and
+        their Community Trademarks from the copy, and
 
-    (c) The existence of Your copy does not prevent, obstruct or 
+    (c) The mere existence of the copy does not prevent, obstruct or 
         restrict any (other) Publishers from making an Official Release 
-        of This Project on any given Distribution Channel.
+        of This Project on a particular Distribution Channel.
 
 "Dependencies" means any work that that This Project depends on and/or 
  is embedding in such a way, that if it were missing, would prevent a 
  third party from using This Project for its intended purpose and/or in 
- the same way that you used This Project. The Dependencies need not include any:
+ the same way that you used This Project. Dependencies need not include:
 
    (a) "Platform Provided Works", which means any work that is provided by a 
         third party Platform or its owner (including but not limited to, the 
-        Platform itself, a Software Development Kit or an Application 
-        Programming Interface) that is designed to allow third party works to 
-        be Operated on that Platform.
+        Platform itself, a Software Development Kit, Standard Library or 
+        Application Programming Interface) that is designed to allow third 
+        party works to be Operated on that Platform.
 
    (b) "Platform Protected Work", which means any part of This Project that is 
         protected from disclosure or distribution because of an agreement with
@@ -209,13 +217,18 @@ litigate against and/or otherwise seek and collect damages from You.
         standard interface, in order to enable The Project to be Operated on 
         that Platform.
 
-   (c) "Mods or Larger Projects", which means any larger work where the 
-        preferred form of making changes to that work are kept external and 
-        separate from The Source Code and where that work depends upon and/or 
-        embeds This Project in such a way that This Project (including any of 
-        Your Modifications) can be meaningfully separated from the Larger Work 
-        and This Project can continue to function and remain useful for its 
-        intended purpose without any additional modifications.
+   (c) "Larger Works", which means any larger work where the work's Source 
+        is kept external and separate from the This Project's Source and where 
+        that work depends upon and/or embeds This Project in such a way that 
+        This Project (including any of Your Modifications) can be meaningfully 
+        separated from the Larger Work and This Project can continue to 
+        function and remain useful for its intended purpose without any 
+        additional modifications.
+
+    (d) "Open Source Works" which means any Readily Obtainable and Clearly 
+        Discoverable works that are licensed under an Open Source License (or 
+        works that otherwise exist in the public domain) that are kept external
+        and separate from the The Source to This Project.
 
 "Notice" means a copyright notice listed in The Attached Notices that
  is preceded by zero or more comma-separated trademarks and precedes zero 
@@ -228,9 +241,9 @@ litigate against and/or otherwise seek and collect damages from You.
        term or phrase followed by, the unicode trademark symbol, '(TM)' 
        or '(R)', and
 
-   (b) It is unique and "Distinguishable" (a reasonable person will not 
-       confuse the trademark with an earlier Publisher's Community 
-       Trademark).
+   (b) It is unique and "Distinguishable" which means, a reasonable 
+       person will not confuse the trademark with an existing
+       Publisher's Community Trademark.
 
    (c) It was added in good faith and represents a genuine mark to 
        be used for a Derived Product.
@@ -267,14 +280,3 @@ Exhibit A:
   This project is licensed under the The Qlovatech Community Trademark License 1.0
   this means you can do what you like with this project as long as you share your 
   changes and respect the community trademarks. See the https://qlova.tech/ctl/1.0
-
-If You are building a Mod or Larger Project and You are depending on an unmodified 
-Release from a Publisher you may simply name This License and refer to the 
-Publisher's Community Trademark. See Exhibit B for an example. Just make sure the 
-information is specific enough and placed in a reasonable location so that 
-interested users will be able to find the Publisher's copy of The Source Code.
-
-Exhibit B:
-  This project has been built [for/with] [Community Trademark] which is licensed 
-  under the The Qlovatech Community Trademark License, you can build stuff
-  [for/with] [Community Trademark] too! Go check out [link to Derived Product].
