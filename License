@@ -4,73 +4,68 @@ Qlovatech™ Copyright© 2021 Qlova <https://qlova.org>
 
 You are hereby granted a universal non-exclusive right to, use, reproduce, 
 make available, feature, modify, display, perform, distribute, and/or 
-otherwise exploit This Project for *any purpose* subject to the 
-following conditions:
+otherwise exploit Your copy of This Project for *any purpose* subject to 
+the following conditions:
       
-1. If any third party interacts with, receives, or observes, the display, 
-   feature, performance and/or otherwise availability of your copies of 
-   This Project, then You must ensure that The Source Code and Dependencies 
-   of those copies are Readibly Obtainable and Clearly Discoverable, by those 
-   third-parties for at least 30 days after you last displayed, featured, 
-   performed and/or otherwise made your copy available.      
+1. If at any time, You Share a copy of This Project (with or without 
+   Modifications) to any third party (and You are not making an Official 
+   Release) then You must ensure that The Source Code, The License and 
+   Dependencies of that copy are Readily Obtainable and Clearly 
+   Discoverable by that third party for at least 30 days after you 
+   last Shared this copy of The Project to them.
    
-2. You may not restrict in any way, the rights that This License grants to 
-   any users or Providers of The Project (except when they have made an 
-   unresolved breach to the terms and conditions of This License). You agree:  
-   
-   (a) not to sue, litigate against and/or otherwise seek damages from, in 
-       order to prevent or punish, any user or Providers, for 
-       exercising their rights to This Project (including to any 
-       Modifications You have made).
+2. You may not restrict in any way, the rights This License grants to 
+   any users or Publishers of The Project (except when they have made an 
+   unresolved breach to the terms and conditions of This License). 
+   You agree:  
   
-   (b) to irrevocably and automatically grant the required licenses 
+   (a) to irrevocably and automatically grant any required licenses 
        (including patent licenses), at no cost, fee, nor royalty to every 
-       Provider and/or user of This Project so that they may 
-       exercise their rights to any Modifications You have made).
+       Publisher and/or user of This Project so that they may 
+       exercise their rights to any Modifications You may have made.
 
-   (c) not to obfuscate, omit, or obstruct in any way This License and/or 
-       the Buildable Source of This Project and/or the ability for a 
-       third party to find, acquire and/or obtain it, either in bad faith, 
-       and/or to circumvent the terms and conditions of This License.
+   (b) not to obfuscate, omit, and/or obstruct in any way This License, The 
+       Source Code and/or Dependencies of This Project and/or the ability 
+       for a third party to find, acquire and/or obtain it, either in bad 
+       faith, and/or to circumvent the terms and conditions of This License.
 
 3. When making Modifications to This Project You must decide whether or 
-   not to become/remain a "Provider" and either:
+   not to become or remain a Publisher and either:
    
-   (a) You agree to become/remain a Provider. You must maintain Your Notice
-       in The Attached Notices and for at least 30 days and as long as you 
-       continue to offer any Derived Products, you must ensure the Buildable 
-       Source for Your Derived Products are, Readibly Obtainable and 
-       Clearly Discoverable, by the public.
+   (a) You agree to become or remain a Publisher and You agree to maintain 
+       Your Notice in The Attached Notices and, for at least 30 days, and 
+       as long as You continue to make Official Releases to third parties, 
+       You must ensure that The Source Code of Your Official Releases are, 
+       Readily Obtainable and Clearly Discoverable, by the general public.
 
-   (b) You do not agree to become/remain a Provider and you omit/remove Your 
-       Notice from The Attached Notices and you agree that This Project 
-       (including any of Your Modifications) may be relicensed upon the 
-       written agreement between each Provider under the terms of an agreed 
-       upon Open Source License (or at any time if there are no Providers). 
+   (b) You do not agree to become or remain a Publisher and You agree, to 
+       omit/remove Your Notice from The Attached Notices and agree that 
+       This Project (including any Modifications You may have made) may 
+       be relicensed upon the written agreement between each Publisher 
+       under the terms of an agreed upon Open Source License (or at any 
+       time if there are no Publishers). 
 
-4. You may not invalidate the Attached Notices through any of Your 
-   Modifications and the only permitted modifications You can make to the 
-   Attached Notices are to:
+4. You may not modify the Attached Notices, except to:
 
-   (a) Add/modify/remove your Notice.
+   (a) Add/modify/remove Your Notice.
 
-   (b) Reorder the Notices.  
+   (b) Reorder, relocate and/or format the Notices.
 
-   (c) Remove a Notice from your copy of This Project with the written 
-       consent of the copyright holder.
+   (c) Modify/remove a Notice with written consent from the Notice's
+       copyright holder.
 
    (d) Merge Notices verbatim with another set of Notices. Each Community 
        Trademark before the merge must remain a Community Trademark after
-       the merge. You must make a reasonable effort to research and resolve 
-       conflicts by awarding trademarks to the Trademark Owner (to your best 
-       judgement). A trademark must not be removed from the Attached Notices
-       this way.
+       the merge, so you must make a reasonable effort to research and 
+       resolve conflicts by awarding the trademarks to the Trademark Owner 
+       (to Your best judgement). A trademark may not be removed from the 
+       Attached Notices this way.
 
-5. You may not use the name of any (other) Providers nor any of their 
-   Community Trademarks, to title, endorse or promote, any products, 
+5. You may not use the name of any (other) Publishers nor any of their 
+   Community Trademarks, to title, endorse or promote, any of Your products, 
    projects, works, performances and/or services derived from, or otherwise 
    featuring This Project unless You have the prior written consent from, 
-   or the publicly documented permission from the Provider.
+   or the publicly documented permission from the Publisher.
 
    However this condition cannot (and does not) prevent You from:
 
@@ -79,35 +74,38 @@ following conditions:
        derived from, and/or otherwise featuring This Project as long as 
        those words are used in good faith and for their natural meanings 
        and are not used in an attempt to capitalise on the reference to 
-       any (other) Provider's Community Trademarks.
+       any (other) Publisher's Community Trademarks.
 
-   (b) "Nominative Fair Use" which means using a Provider's Community 
-       Trademark to review and/or draw comparison to Derived Products.
+   (b) "Nominative Fair Use" which means using a Publisher's Community 
+       Trademark to review and/or fairly draw comparison to one of 
+       their Official Releases.
 
-   (c) "Contributing" which means that as long as your copy is a 
-        Contribution you are not required to remove any Community 
-        Trademarks that already exist in The Project (as you received it).
+   (c) "Contributing" which means that as long as Your copy remains a 
+        Contribution You are not required to remove any Community 
+        Trademarks that existed in The Project (as You received it)
+        in order to Share it.
        
 In the event that You breach a condition of This License, You must take 
 immediate steps to resolve this breach and, until You resolve this breach, 
 any rights granted to You by This License (except for the rights to display 
-and distribute The Buildable Source and Dependencies) are automatically 
+and distribute The Source Code and Dependencies) are automatically 
 terminated, however, the conditions of This License will continue to apply to 
 You and any third party who has agreed to This License, may, on behalf of 
 each copyright holder, and only in good faith and to ensure the fairness, 
 integrity, precedent and/or compliance of This License, contact, sue, 
 litigate against and/or otherwise seek and collect damages from You.
 
-"This License" means version 1.0 (or later) of The Qlovatech Community 
- Trademark License.
+"This License" (or "The License") means version 1.0 (or later) of The 
+ Qlovatech Community Trademark License. Qlova may release new versions of 
+ This License from time to time in order to resolve errors and/or ambiguity.
 
-"The Project" (or "This Project") means the work covered by This License, 
- including any modified versions and/or derivatives.
+"This Project" (or "The Project") means the work covered by This License 
+ and includes any modified versions and/or derivatives of the work.
 
-"Provider" means a copyright holder listed inside The Attached Notices.
+"Publisher" means a copyright holder listed in The Attached Notices.
 
-"Derived Product" means a product or service created by a Provider 
- that is referred to by a Community Trademark.
+"Official Release" means a copy of This Project Shared by a Publisher
+ and is referred to by one of their Community Trademarks.
 
 "Trademark Owner" means either:
 
@@ -123,7 +121,8 @@ litigate against and/or otherwise seek and collect damages from You.
 
 "The Attached Notices" means either:
 
-    (a) A 'Notices' document, that is distributed with This Project, or
+    (a) A 'Notices' document, that is distributed with This Project and
+        contains a list of Trademark Notices, or
 
     (b) A Clearly Discoverable, isolated list of Trademark Notices located 
         within This Project.
@@ -143,10 +142,19 @@ litigate against and/or otherwise seek and collect damages from You.
 "Open Source License" means any license has been approved by the Open Source 
  Initiative. A list of which can be found at https://opensource.org/
 
-"Clearly Discoverable" means existing at a standard or reasonable location 
- such that any interested third party can find it.
+"Share" or (or "Shared" in the past sense) means to feature, publish, 
+ bundle, distribute, showcase, perform, sell, and/or otherwise make 
+ available/interactable. For purposes of this definition "interactable" 
+ in relation to the work means interacting with a larger work that 
+ embeds a copy of the work where interactions with the larger work has an 
+ observable effect that would not occur if the work ceased to exist. 
+ For example, when the work is used by a service that is being interacted
+ with across a computer network in order to serve requests.
 
-"Readabily Obtainable" means publicly available or available on request at 
+"Clearly Discoverable" means existing at a standard or reasonable location 
+ such that any interested party can find it.
+
+"Readily Obtainable" means publicly available or available on request at 
  a fee no more than the cost of distribution.
 
 "Modifications" means any modifications made to The Buildable Source, 
@@ -171,17 +179,17 @@ litigate against and/or otherwise seek and collect damages from You.
  Project and includes The Attached Notices and is licensed under the terms of 
  This License which is included in a Clearly Discoverable location.
 
-"Contribution" means any of your copies of This Project where:
+"Contribution" means any of Your copies of The Project where:
 
     (a) Your Modifications are clearly documented and Your name is
         associated with the copy, and
 
-    (b) A Listed Provider has not requested You to remove references to their 
-        Community Trademarks from the copy, and
+    (b) A Listed Publisher has not requested that You remove 
+        their Community Trademarks from Your copy, and
 
-    (d) The existence of the copy on a particular Distribution Channel 
-        does not prevent or restrict any (other) Derived Products from 
-        existing on that Distribution Channel.
+    (c) The existence of Your copy does not prevent, obstruct or 
+        restrict any (other) Publishers from making an Official Release 
+        of This Project on any given Distribution Channel.
 
 "Dependencies" means any work that that This Project depends on and/or 
  is embedding in such a way, that if it were missing, would prevent a 
@@ -221,7 +229,7 @@ litigate against and/or otherwise seek and collect damages from You.
        or '(R)', and
 
    (b) It is unique and "Distinguishable" (a reasonable person will not 
-       confuse the trademark with an earlier Provider's Community 
+       confuse the trademark with an earlier Publisher's Community 
        Trademark).
 
    (c) It was added in good faith and represents a genuine mark to 
@@ -260,11 +268,11 @@ Exhibit A:
   this means you can do what you like with this project as long as you share your 
   changes and respect the community trademarks. See the https://qlova.tech/ctl/1.0
 
-Quick Tip: If You are building a Mod or Larger Project and You are depending on 
-an unmodified copy of This Project from a Listed Provider, you may simply name This 
-License and refer to the Listed Provider's Community Trademark. See Exhibit B for
-an example. Just make sure the information is specific enough so that interested
-users can find the Listed Provider's copy of The Source Code.
+If You are building a Mod or Larger Project and You are depending on an unmodified 
+Release from a Publisher you may simply name This License and refer to the 
+Publisher's Community Trademark. See Exhibit B for an example. Just make sure the 
+information is specific enough and placed in a reasonable location so that 
+interested users will be able to find the Publisher's copy of The Source Code.
 
 Exhibit B:
   This project has been built [for/with] [Community Trademark] which is licensed 
