@@ -1,0 +1,20 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl pavement(Clone)
+Kd 0.757 0.757 0.8
+
+newmtl light(Clone)
+Kd 0.945 0.949 0.965
+
+newmtl _defaultMat(Clone)
+Kd 0.953 0.375 0.292
+
+newmtl asphalt(Clone)
+Kd 0.431 0.455 0.529
+
+newmtl asphaltEdge(Clone)
+Kd 0.322 0.337 0.396
+
+newmtl line(Clone)
+Kd 0.549 0.576 0.678
+

@@ -1,10 +1,10 @@
-Builda Guide
+How to Builda City
 
-Welcome [name]! As our newest builda, your job is to sell power to the world.
+Welcome [name]! As our newest employee, it's your job is to sell our energy to the world.
 
-You see, The Powers That Be have invested in a global energy supply infrastructure and now all that's left is to induce some demand...
+You see, we've been investing in worldwide energy supply infrastructure and now all that's left is to induce some demand...
 
-The energy infrastructure is coin-operated so if you see sparks, that means it's time to deposit a coin. Any coins leftover? Well that's yours to spend how you please!
+Powercraft Controls:
+Use your scrollwheel to select what you want to build, then right click to build. You can charge and supply energy with a left click. Oh and one more thing! Hold E while moving for some BOOST.
 
-PS: Just don't damage your Power Craft
-(That's company property).
+So go on, what are you waiting for? Build a City!

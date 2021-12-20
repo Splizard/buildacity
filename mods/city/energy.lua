@@ -46,7 +46,7 @@ minetest.register_node("city:wind_turbine", {
     },
     paramtype = "light",
     paramtype2 = "facedir",
-    groups = {flammable = 1, energy_source = 4},
+    groups = {flammable = 1, energy_source = 7},
     tiles = {"city_white.png"},
 
     on_construct = function(pos, placer, itemstack, pointed_thing)
@@ -71,15 +71,7 @@ minetest.register_node("city:wind_turbine_blade", {
     pointable = false,
     visual_scale = 2,
     sunlight_propagates = true,
-    tiles = {{
-        name = "city_wind_turbine_blade_spinning.png",
-        animation = {
-            type = "vertical_frames",
-            aspect_w = 64,
-            aspect_h = 64,
-            length = 4,
-        },
-    }},
+    tiles = {"city_wind_turbine_blade.png"},
 })
 
 
@@ -123,5 +115,13 @@ minetest.register_node("city:wind_turbine_blade_disabled", {
     pointable = false,
     visual_scale = 2,
     sunlight_propagates = true,
-    tiles = {"city_wind_turbine_blade.png"},
+    tiles = {{
+        name = "city_wind_turbine_blade_spinning.png",
+        animation = {
+            type = "vertical_frames",
+            aspect_w = 64,
+            aspect_h = 64,
+            length = 4,
+        },
+    }},
 })

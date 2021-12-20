@@ -4,7 +4,7 @@ local guide = io.open(minetest.get_modpath("builda").."/guide.txt", "r"):read("a
 minetest.register_on_joinplayer(function(player)    
     local name = player:get_player_name()
     if name == "singleplayer" then
-        name = "player"
+        name = "builda"
     end
 
     --replace [name] with the player's name

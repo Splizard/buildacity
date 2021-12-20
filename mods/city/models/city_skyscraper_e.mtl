@@ -1,0 +1,20 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl trim(Clone)
+Kd 0.737 0.886 1
+
+newmtl window(Clone)
+Kd 0.737 0.886 1
+
+newmtl border(Clone)
+Kd 0.561 0.569 0.6
+
+newmtl _defaultMat(Clone)
+Kd 0.764 0.764 0.764
+
+newmtl roof(Clone)
+Kd 0.337 0.737 0.6
+
+newmtl door(Clone)
+Kd 0.388 0.4 0.447
+

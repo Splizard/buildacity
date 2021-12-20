@@ -11,9 +11,6 @@ local energy_count = 2;
 local AddPlayerEnergy = function(player, energy)
     player:get_meta():set_float("energy", player:get_meta():get_float("energy")+energy)
     player:hud_change(energy_count, "text", math.floor(0.5+player:get_meta():get_float("energy")))
-    if player:get_meta():get_float("energy") < 0 then
-        player:set_hp(0, "out of energy")
-    end
 end
 
 --returns true if the player can afford.
@@ -31,16 +28,16 @@ local PlayerCanAfford = function(player, coins)
     return player:get_meta():get_int("coins") >= coins
 end
 
-local decayed_suffix_len = #"_decayed"
-local broken_suffix_len = #"_broken"
+local PlayerHasEnergy = function(player, energy)
+    return player:get_meta():get_float("energy") >= energy
+end
+
+local off_suffix_len = #"_off"
 
 
 minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
-    if string.match(node.name, "city:.*_decayed") then
+    if string.match(node.name, "city:.*_off") and PlayerHasEnergy(puncher, 1) then
         local income = 1
-        if string.match(node.name,"house") then
-            income = 2
-        end
         if string.match(node.name,"skyscraper") then
             income = 10
         end
@@ -49,7 +46,7 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
             height = 1
         end
         AddPlayerCoins(puncher, income)
-        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-decayed_suffix_len), param2 = node.param2})
+        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-off_suffix_len), param2 = node.param2})
         minetest.sound_play("builda_income", {pos = pos, max_hear_distance = 20})
         minetest.add_particle({
             pos={x=pos.x, y=pos.y-(2.9-height), z=pos.z},
@@ -60,18 +57,19 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
             playername = puncher:get_player_name(),
         })
         AddPlayerEnergy(puncher, -1)
+        city.update_roads(pos)
     end
     local energy = minetest.get_item_group(node.name, "energy_source")
     if energy > 0 then
         if node.name == "city:wind_turbine" then 
             energy = energy * (pos.y-8) --energy is proportional to height (wind)
         end
-        minetest.after(1, function(energy)
-            if city.disable(pos) then
-                AddPlayerEnergy(puncher, energy)
-            end
-        end, energy)
-        minetest.sound_play("builda_charge", {pos = pos, max_hear_distance = 20})
+        if city.disable(pos) then
+            minetest.after(1, function(energy)
+                AddPlayerEnergy(puncher, energy) 
+            end, energy)
+            minetest.sound_play("builda_charge", {pos = pos, max_hear_distance = 20})
+        end
     end
     if string.match(node.name, "city:.*_disabled") then
         minetest.sound_play("builda_broken", {pos = pos, max_hear_distance = 20})
@@ -97,11 +95,10 @@ minetest.register_globalstep(function(dt)
     for _, player in ipairs(minetest.get_connected_players()) do
         if player:get_hp() > 0 then
             local controls = player:get_player_control() 
-            if controls.aux1 and player:get_meta():get_float("energy") > 0 then --Speed boost costs energy.
+            if controls.aux1 then
                 player:set_physics_override({
-                    speed = 4,
+                    speed = 8,
                 })
-                AddPlayerEnergy(player,  - dt * 1)
             else 
                 player:set_physics_override({
                     speed = 1,
@@ -137,37 +134,24 @@ minetest.is_protected = function(pos, name)
     return true
 end
 
-minetest.register_on_placenode(function(pos, newnode, placer, oldnode, itemstack, pointed_thing)
-    if string.match(newnode.name, "city:road.*") then
-        AddPlayerEnergy(placer, -2)
-    end
-    return true -- we don't have an inventory in this game, so we never remove items from the hotbar.
-end)
-
 minetest.register_item(":", {
     type = "none",
     range = 10,
 })
 
-minetest.register_on_respawnplayer(function(player)
-    player:get_meta():set_int("coins", 0);
-    player:hud_change(coins_count, "text", 0)
-    AddPlayerEnergy(player, (-player:get_meta():get_int("energy"))+5)
-end)
-
 --We need to attach the Energy and Humans HUD counts.
 --Humans is top left, Energy is top right.
 minetest.register_on_joinplayer(function(player)    
-    --Give the player a reasonable amount of starting energy.
-    if player:get_meta():contains("energy") == false then
-        player:get_meta():set_float("energy", 100)
+
+    --Give the player their starting coins.
+    if player:get_meta():contains("coins") == false then
+        AddPlayerCoins(player, 100)
     end
 
     local list = {
-        "city:road 1",
+        "builda:road 1",
         "builda:house 1",
         "builda:skyscraper 1",
-        "builda:coins 1",
         "builda:destroyer 1", 
     }
 
@@ -311,19 +295,17 @@ minetest.register_decoration({
 })
 
 --Spanner is used to fix broken power sources.
-minetest.register_item("builda:coins", {
-    description = S("Spanner"),
-    inventory_image = "builda_coin.png",
+minetest.register_item("builda:road", {
+    description = S("Road"),
+    inventory_image = "builda_road.png",
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
-            local pos = pointed_thing.under
-            local node = minetest.get_node(pos)
-            if PlayerCanAfford(user, 5) and city.enable(pos) then
-                    minetest.sound_play("builda_pay", {pos = pos, max_hear_distance = 20})
-                    AddPlayerCoins(user, -5)
-            else
-                minetest.sound_play("builda_error", {pos = pos, max_hear_distance = 20})
+            if pointed_thing.type == "node" then
+                if PlayerCanAfford(user, 1) and city.build("road", pointed_thing.above, user) then
+                    AddPlayerCoins(user, -1)
+                    minetest.sound_play("builda_pay", {pos = pointed_thing.above, max_hear_distance = 20})
+                end
             end
         end
     end
@@ -335,8 +317,11 @@ minetest.register_item("builda:house", {
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
-            if city.build("house", pointed_thing.above, user) then
-                AddPlayerEnergy(user, -5)
+            if PlayerCanAfford(user, 1) then
+                if city.build("house", pointed_thing.above, user) then
+                    AddPlayerCoins(user, -1)
+                    minetest.sound_play("builda_pay", {pos = pointed_thing.above, max_hear_distance = 20})
+                end
             end
         end
     end
@@ -348,8 +333,11 @@ minetest.register_item("builda:skyscraper", {
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
-            if city.build("skyscraper", pointed_thing.above, user) then
-                AddPlayerEnergy(user, -100)
+            if PlayerCanAfford(user, 10) then
+                if city.build("skyscraper", pointed_thing.above, user) then
+                    AddPlayerCoins(user, -10)
+                    minetest.sound_play("builda_pay", {pos = pointed_thing.above, max_hear_distance = 20})
+                end
             end
         end
     end
@@ -374,7 +362,6 @@ minetest.register_item("builda:destroyer", {
             local node = minetest.get_node(pos)
             if minetest.get_item_group(node.name, "flammable") > 0 and PlayerCanAfford(user, 1) then
                 AddPlayerEnergy(user, -5)
-                AddPlayerCoins(user, -1)
 
                 --'explode' the node.
                 minetest.set_node(pos, {name = "air"})
@@ -403,3 +390,4 @@ minetest.register_item("builda:destroyer", {
 
 local modpath = minetest.get_modpath("builda")
 dofile(modpath.."/guide.lua")
+dofile(modpath.."/abms.lua")

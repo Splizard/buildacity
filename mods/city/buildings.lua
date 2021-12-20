@@ -21,7 +21,10 @@ function city.build(kind, pos, builder)
         return false
     end
 
-    local building = city.buildings[kind][math.random(1, #city.buildings[kind])]
+    local road = city.get_road_near(pos, builder:get_pos())
+    if not road then
+        return false
+    end
 
     if builder then
         if minetest.is_protected(pos, builder:get_player_name()) then
@@ -30,12 +33,15 @@ function city.build(kind, pos, builder)
         end
     end
 
-    local param2 = 0
-    local road = city.get_road_near(pos, builder:get_pos())
-    local dir = vector.subtract(pos, road)
-    if road then
-        param2 = minetest.dir_to_facedir(dir)
+    if kind == "road" then
+        minetest.set_node(pos, {name = "city:road_off"})
+        city.update_roads(pos)
+        return true
     end
+
+    local building = city.buildings[kind][math.random(1, #city.buildings[kind])] 
+    local dir = vector.subtract(pos, road)
+    local param2 = minetest.dir_to_facedir(dir)
 
     --If the building has a width greater than one, we need to check
     --that the nodes to the right (taking into account param2) 
@@ -61,7 +67,7 @@ function city.build(kind, pos, builder)
         end
     end
 
-    minetest.set_node(pos, {name = building, param2 = param2})
+    minetest.set_node(pos, {name = building.."_off", param2 = param2})
     return true
 end
 
@@ -119,28 +125,24 @@ function city.register_building(name, def)
         },
     }
 
+
+    local decayed_node_def = table.copy(node_def)
+
+    --replace lit windows with dark windows
+    for i,v in ipairs(decayed_node_def.tiles) do
+        if v.color.window then
+            decayed_node_def.tiles[i].color = 0xFF1D2222
+        end
+    end
+
+    local suffix = "_off"
     if not def.self_sufficient then
-        local decayed_node_def = table.copy(node_def)
-
-        --replace lit windows with dark windows
-        for i,v in ipairs(decayed_node_def.tiles) do
-            if v.color.window then
-                decayed_node_def.tiles[i].color = 0xFF1D2222
-            end
-        end
-
-        node_def.on_timer = function(pos, elapsed)
-            minetest.set_node(pos, {name = name.."_decayed", param2 = minetest.get_node(pos).param2})
-        end
-
-        minetest.register_node(name.."_decayed", decayed_node_def)
+        node_def.groups["consumer"] = 1
     end
 
     --setup a node timer that will decay the building
     --after a random amount of time.
     node_def.on_construct = function(pos, placer, itemstack, pointed_thing)
-        minetest.get_node_timer(pos):start(math.random(1, 60*5))
-
         if width > 1 then
             local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
             minetest.set_node(vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x}), {name = "city:space"})
@@ -155,6 +157,7 @@ function city.register_building(name, def)
     end
 
     minetest.register_node(name, node_def)
+    minetest.register_node(name..suffix, decayed_node_def)
 end
 
 city.register_building("city:house_long_a", {
@@ -164,7 +167,52 @@ city.register_building("city:house_long_a", {
     self_sufficient = true, 
     kind = "house",
 })
-city.register_building("city:house_a", {height = 0.7, mesh = "city_house_a", kind = "house"})
+city.register_building("city:house_long_b", {
+    mesh = "city_house_long_b",
+    width = 2,
+    height = 0.75,
+    self_sufficient = true, 
+    kind = "house",
+})
+city.register_building("city:house_long_c", {
+    mesh = "city_house_long_c",
+    width = 2,
+    height = 0.75,
+    kind = "house",
+})
+city.register_building("city:house_long_d", {
+    mesh = "city_house_long_d",
+    width = 2,
+    height = 0.75,
+    kind = "house",
+})
+city.register_building("city:house_long_e", {
+    mesh = "city_house_long_e",
+    width = 2,
+    height = 0.75,
+    kind = "house",
+})
+
+city.register_building("city:house_a", {height = 0.75, mesh = "city_house_a", kind = "house"})
 city.register_building("city:house_b", {height = 0.6, mesh = "city_house_b", kind = "house"})
 city.register_building("city:house_c", {height = 0.8, mesh = "city_house_c", kind = "house"})
-city.register_building("city:skyscraper_a", {height = 2.9, mesh = "city_skyscraper_a", kind = "skyscraper"})
+city.register_building("city:house_d", {height = 0.5, mesh = "city_house_d", kind = "house"})
+city.register_building("city:house_e", {height = 0.5, mesh = "city_house_e", kind = "house"})
+city.register_building("city:house_f", {height = 0.7, mesh = "city_house_f", kind = "house", self_sufficient = true})
+city.register_building("city:house_g", {height = 0.7, mesh = "city_house_g", kind = "house"})
+city.register_building("city:house_h", {height = 0.6, mesh = "city_house_h", kind = "house", self_sufficient = true})
+city.register_building("city:house_i", {height = 0.65, mesh = "city_house_i", kind = "house"})
+city.register_building("city:house_j", {height = 0.7, mesh = "city_house_j", kind = "house"})
+city.register_building("city:house_k", {height = 0.7, mesh = "city_house_k", kind = "house"})
+city.register_building("city:house_l", {height = 0.7, mesh = "city_house_l", kind = "house"})
+city.register_building("city:house_m", {height = 0.7, mesh = "city_house_m", kind = "house"})
+city.register_building("city:house_n", {height = 0.6, mesh = "city_house_n", kind = "house"})
+city.register_building("city:house_o", {height = 0.8, mesh = "city_house_o", kind = "house"})
+city.register_building("city:house_p", {height = 0.62, mesh = "city_house_p", kind = "house"})
+
+city.register_building("city:skyscraper_a", {height = 2.31, mesh = "city_skyscraper_a", kind = "skyscraper"})
+city.register_building("city:skyscraper_b", {height = 3.6, mesh = "city_skyscraper_b", kind = "skyscraper"})
+city.register_building("city:skyscraper_c", {height = 2.9, mesh = "city_skyscraper_c", kind = "skyscraper"})
+city.register_building("city:skyscraper_d", {height = 4.23, mesh = "city_skyscraper_d", kind = "skyscraper"})
+city.register_building("city:skyscraper_e", {height = 2, mesh = "city_skyscraper_e", kind = "skyscraper"})
+city.register_building("city:skyscraper_f", {height = 3.28, mesh = "city_skyscraper_f", kind = "skyscraper"})
