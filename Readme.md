@@ -41,6 +41,8 @@ a modder, submit a PR!
 * Mesecon-style power?
 * Bridges, Tunnels and Hilly Roads
 * Population and City Names
+* Driving around the city in a car.
+* Walking around the city as a person?
 
 ## Minetest Engine Wishlist
 If you work on the Minetest engine, here are some feature
