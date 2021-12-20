@@ -38,6 +38,12 @@ local off_suffix_len = #"_off"
 minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
     if string.match(node.name, "city:.*_off") and PlayerHasEnergy(puncher, 1) then
         local income = 1
+        if string.match(node.name,"shop") then
+            income = 2
+        end
+        if string.match(node.name,"mall") then
+            income = 5
+        end
         if string.match(node.name,"skyscraper") then
             income = 10
         end
@@ -151,6 +157,8 @@ minetest.register_on_joinplayer(function(player)
     local list = {
         "builda:road 1",
         "builda:house 1",
+        "builda:shop 1",
+        "builda:mall 1",
         "builda:skyscraper 1",
         "builda:destroyer 1", 
     }
@@ -327,6 +335,38 @@ minetest.register_item("builda:house", {
     end
 })
 
+minetest.register_item("builda:shop", {
+    description = S("Shop"),
+    inventory_image = "builda_shop.png",
+    type = "tool",
+    on_place = function(itemstack, user, pointed_thing)
+        if pointed_thing.type == "node" then
+            if PlayerCanAfford(user, 2) then
+                if city.build("shop", pointed_thing.above, user) then
+                    AddPlayerCoins(user, -2)
+                    minetest.sound_play("builda_pay", {pos = pointed_thing.above, max_hear_distance = 20})
+                end
+            end
+        end
+    end
+})
+
+minetest.register_item("builda:mall", {
+    description = S("Mall"),
+    inventory_image = "builda_mall.png",
+    type = "tool",
+    on_place = function(itemstack, user, pointed_thing)
+        if pointed_thing.type == "node" then
+            if PlayerCanAfford(user, 5) then
+                if city.build("mall", pointed_thing.above, user) then
+                    AddPlayerCoins(user, -5)
+                    minetest.sound_play("builda_pay", {pos = pointed_thing.above, max_hear_distance = 20})
+                end
+            end
+        end
+    end
+})
+
 minetest.register_item("builda:skyscraper", {
     description = S("Skyscraper"),
     inventory_image = "builda_skyscraper.png",
@@ -360,7 +400,7 @@ minetest.register_item("builda:destroyer", {
             end
 
             local node = minetest.get_node(pos)
-            if minetest.get_item_group(node.name, "flammable") > 0 and PlayerCanAfford(user, 1) then
+            if PlayerCanAfford(user, 1) and minetest.get_item_group(node.name, "consumer") > 0 then
                 AddPlayerEnergy(user, -5)
 
                 --'explode' the node.

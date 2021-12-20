@@ -158,7 +158,7 @@ local register_road = function(name, mesh, tiles)
         },
         wield_image = "city_road.png",
         inventory_image = "city_road.png",
-        paramtype2 = "facedir",
+        paramtype2 = "colorfacedir",
         drawtype = "mesh",
         mesh = mesh..".obj",
         tiles = city.load_material("city", mesh..".mtl"),
@@ -176,6 +176,7 @@ local register_road = function(name, mesh, tiles)
     end
     def_lit.mesh = mesh.."_lit.obj"
     def_lit.tiles = city.load_material("city", mesh.."_lit.mtl")
+    def_lit.groups["consumer"] = 1
 
     local def_gap = table.copy(def)
     def_gap.on_construct = function (pos, placer, itemstack, pointed_thing)
@@ -183,6 +184,7 @@ local register_road = function(name, mesh, tiles)
     end
     def_gap.mesh = mesh..".obj"
     def_gap.tiles = city.load_material("city", mesh..".mtl")
+    def_gap.groups["consumer"] = 1
 
     --make unlit road a bit more obvious.
     for i,v in ipairs(def.tiles) do

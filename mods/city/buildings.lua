@@ -52,9 +52,11 @@ function city.build(kind, pos, builder)
         local left = vector.add(pos, {x=-dir.z, y=dir.y, z=dir.x})
         local node_right = minetest.get_node(vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x}))
         local node_left = minetest.get_node(left)
+        local node_under_right = minetest.get_node(vector.subtract(pos, {x=-dir.z, y=dir.y-1, z=dir.x}))
+        local node_under_left = minetest.get_node(vector.subtract(left, {x=0, y=1, z=0}))
 
-        if node_right.name ~= "air" then
-            if node_left.name == "air" then 
+        if node_right.name ~= "air" or minetest.get_item_group(node_under_right.name, "ground") == 0 then
+            if node_left.name == "air" and minetest.get_item_group(node_under_left.name, "ground") > 0 then 
                 pos = left --move left
                 break
             else
@@ -193,6 +195,8 @@ city.register_building("city:house_long_e", {
     kind = "house",
 })
 
+--TODO maybe load this information from the file-structure?
+
 city.register_building("city:house_a", {height = 0.75, mesh = "city_house_a", kind = "house"})
 city.register_building("city:house_b", {height = 0.6, mesh = "city_house_b", kind = "house"})
 city.register_building("city:house_c", {height = 0.8, mesh = "city_house_c", kind = "house"})
@@ -216,3 +220,19 @@ city.register_building("city:skyscraper_c", {height = 2.9, mesh = "city_skyscrap
 city.register_building("city:skyscraper_d", {height = 4.23, mesh = "city_skyscraper_d", kind = "skyscraper"})
 city.register_building("city:skyscraper_e", {height = 2, mesh = "city_skyscraper_e", kind = "skyscraper"})
 city.register_building("city:skyscraper_f", {height = 3.28, mesh = "city_skyscraper_f", kind = "skyscraper"})
+
+city.register_building("city:shop_a", {height = 0.75, mesh = "city_shop_a", kind = "shop"})
+city.register_building("city:shop_b", {height = 0.75, mesh = "city_shop_b", kind = "shop"})
+city.register_building("city:shop_c", {height = 0.75, mesh = "city_shop_c", kind = "shop"})
+city.register_building("city:shop_d", {height = 0.75, mesh = "city_shop_d", kind = "shop"})
+city.register_building("city:shop_e", {height = 0.75, mesh = "city_shop_e", kind = "shop", width = 2})
+city.register_building("city:shop_f", {height = 0.75, mesh = "city_shop_e", kind = "shop"})
+
+
+city.register_building("city:mall_a", {height = 1, mesh = "city_mall_a", kind = "mall", width = 2})
+city.register_building("city:mall_b", {height = 1, mesh = "city_mall_b", kind = "mall"})
+city.register_building("city:mall_c", {height = 1, mesh = "city_mall_c", kind = "mall"})
+city.register_building("city:mall_d", {height = 1, mesh = "city_mall_d", kind = "mall"})
+city.register_building("city:mall_e", {height = 1, mesh = "city_mall_e", kind = "mall"})
+city.register_building("city:mall_f", {height = 1, mesh = "city_mall_f", kind = "mall"})
+city.register_building("city:mall_g", {height = 1, mesh = "city_mall_g", kind = "mall", width = 2})
