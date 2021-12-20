@@ -107,7 +107,7 @@ function city.register_building(name, def)
             height = def.height,
         },
         node_placement_prediction = "",
-        tiles = city.load_material(def.mesh..".mtl")
+        tiles = city.load_material("city", def.mesh..".mtl")
     }
 
     def.height = def.height or 1

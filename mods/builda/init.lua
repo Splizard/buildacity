@@ -212,7 +212,7 @@ minetest.register_on_joinplayer(function(player)
         collisionbox = {-0.3, 0.0, -0.3, 0.3, 0.3, 0.3},
         visual = "mesh",
         mesh = "builda_craft_default.obj",
-        textures = {"builda_craft_default.png", "builda_craft_default_highlight.png"},
+        textures = {"builda_craft_default.png", "builda_craft_default_secondary.png", "builda_craft_default_highlight.png", "builda_craft_default_details.png"},
     })
     player:set_eye_offset(nil, {x=0,y=0,z=10})
     local name = player:get_player_name()
@@ -390,4 +390,3 @@ minetest.register_item("builda:destroyer", {
 
 local modpath = minetest.get_modpath("builda")
 dofile(modpath.."/guide.lua")
-dofile(modpath.."/abms.lua")

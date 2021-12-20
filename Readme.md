@@ -7,7 +7,7 @@ A multiplayer city-building game running on the Minetest Engine.
 ## Quick Rundown
 You've been employed by a company with plenty of energy to
 sell but no customers to sell it to! It's your job
-to builda city so that you can make some cash!
+to build a city for them so that they can make some cash!
 
 ## Quick Start
 You have a limited amount of energy, so it's important to find 

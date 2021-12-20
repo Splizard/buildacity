@@ -1,10 +1,12 @@
 local S = minetest.get_translator("city")
 
-local models_path = minetest.get_modpath("city") .. "/models/"
+
 
 city = {}
 
-function city.load_material(mtl)
+function city.load_material(mod, mtl)
+    local models_path = minetest.get_modpath(mod) .. "/models/"
+    
     --open the mtl file and load the colors
     --read the Kd lines and place the colors into the tiles.
     --this works with models exported from AssetForge.

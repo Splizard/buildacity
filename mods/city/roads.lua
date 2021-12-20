@@ -161,7 +161,7 @@ local register_road = function(name, mesh, tiles)
         paramtype2 = "facedir",
         drawtype = "mesh",
         mesh = mesh..".obj",
-        tiles = city.load_material(mesh..".mtl"),
+        tiles = city.load_material("city", mesh..".mtl"),
         groups = {flammable = 1},
         node_placement_prediction = "",
 
@@ -175,14 +175,14 @@ local register_road = function(name, mesh, tiles)
         minetest.set_node({x=pos.x, y=pos.y+1, z=pos.z}, {name="city:road_light"})
     end
     def_lit.mesh = mesh.."_lit.obj"
-    def_lit.tiles = city.load_material(mesh.."_lit.mtl")
+    def_lit.tiles = city.load_material("city", mesh.."_lit.mtl")
 
     local def_gap = table.copy(def)
     def_gap.on_construct = function (pos, placer, itemstack, pointed_thing)
         minetest.set_node({x=pos.x, y=pos.y+1, z=pos.z}, {name="city:road_light"})
     end
     def_gap.mesh = mesh..".obj"
-    def_gap.tiles = city.load_material(mesh..".mtl")
+    def_gap.tiles = city.load_material("city", mesh..".mtl")
 
     --make unlit road a bit more obvious.
     for i,v in ipairs(def.tiles) do
