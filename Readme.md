@@ -13,6 +13,8 @@ to build a city for them so that they can make some cash!
 You will need to install [Minetest](http://minetest.net) and
 place this repo inside Minetest's game directory. Start up
 Minetest and select the Builda City coin from the main menu.
+Now you can create a world and start playing!
+Hint: if you can't think of a good world name, try "Earth".
 
 ## Quick Start
 You can only build roads and buildings next to existing roads 
