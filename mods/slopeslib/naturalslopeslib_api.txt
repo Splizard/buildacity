@@ -1,4 +1,4 @@
-Naturalslopeslib Lua API
+slopeslib Lua API
 ========================
 
 Table of contents
@@ -7,41 +7,41 @@ Table of contents
 -- Definitions
 ---- ReplacementTable
 -- Registration API
----- naturalslopeslib.default_definition
----- naturalslopeslib.reset_defaults
----- naturalslopeslib.register_slope
----- naturalslopeslib.set_slopes
----- naturalslopeslib.register_sloped_stomp
----- naturalslopeslib.propagate_overrides
+---- slopeslib.default_definition
+---- slopeslib.reset_defaults
+---- slopeslib.register_slope
+---- slopeslib.set_slopes
+---- slopeslib.register_sloped_stomp
+---- slopeslib.propagate_overrides
 -- Getters
----- naturalslopeslib.get_slope_defs
----- naturalslopeslib.get_regular_node_name
----- naturalslopeslib.get_replacement
----- naturalslopeslib.get_replacement_id
----- naturalslopeslib.get_all_shapes
+---- slopeslib.get_slope_defs
+---- slopeslib.get_regular_node_name
+---- slopeslib.get_replacement
+---- slopeslib.get_replacement_id
+---- slopeslib.get_all_shapes
 -- Shape update API
----- naturalslopeslib.is_free_for_shape_update
----- naturalslopeslib.area_is_free_for_shape_update
----- naturalslopeslib.get_replacement_node
----- naturalslopeslib.chance_update_shape
----- naturalslopeslib.update_shape
----- naturalslopeslib.update_shape_on_walk
+---- slopeslib.is_free_for_shape_update
+---- slopeslib.area_is_free_for_shape_update
+---- slopeslib.get_replacement_node
+---- slopeslib.chance_update_shape
+---- slopeslib.update_shape
+---- slopeslib.update_shape_on_walk
 -- Map generation
----- naturalslopeslib.set_manual_map_generation
----- naturalslopeslib.area_chance_update_shape
----- naturalslopeslib.register_progressive_area_update
+---- slopeslib.set_manual_map_generation
+---- slopeslib.area_chance_update_shape
+---- slopeslib.register_progressive_area_update
 -- Settings getters
----- naturalslopeslib.setting_enable_surface_update
----- naturalslopeslib.setting_enable_shape_on_walk
----- naturalslopeslib.setting_enable_shape_on_generation
----- naturalslopeslib.setting_generation_method
----- naturalslopeslib.setting_generation_factor
----- naturalslopeslib.setting_stomp_factor
----- naturalslopeslib.setting_dig_place_factor
----- naturalslopeslib.setting_time_factor
----- naturalslopeslib.setting_generation_skip
----- naturalslopeslib.setting_enable_shape_on_dig_place
----- naturalslopeslib.setting_smooth_rendering
+---- slopeslib.setting_enable_surface_update
+---- slopeslib.setting_enable_shape_on_walk
+---- slopeslib.setting_enable_shape_on_generation
+---- slopeslib.setting_generation_method
+---- slopeslib.setting_generation_factor
+---- slopeslib.setting_stomp_factor
+---- slopeslib.setting_dig_place_factor
+---- slopeslib.setting_time_factor
+---- slopeslib.setting_generation_skip
+---- slopeslib.setting_enable_shape_on_dig_place
+---- slopeslib.setting_smooth_rendering
 -- Chat commands
 ---- updshape
 
@@ -49,7 +49,7 @@ Table of contents
 Introduction
 ------------
 
-Naturalslopeslib adds the ability for given nodes to turn into slopes and back to full block shape by itself according to the surroundings and the material hardness. It creates natural landscape and smoothes movements.
+slopeslib adds the ability for given nodes to turn into slopes and back to full block shape by itself according to the surroundings and the material hardness. It creates natural landscape and smoothes movements.
 
 Slopes can be generated in various ways. Those events can be turned on or off in settings. The shape is updated on generation, with time, by stepping on edges or when digging and placing nodes.
 
@@ -58,26 +58,26 @@ As Minetest main unit is the block, having half-sized blocks can break a lot of 
 Usage
 -----
 
-You may register slopes in two ways: letting the mod generating all the stuff or getting the definitions and registering the nodes in the calling mod. With the first method, slope nodes will be registered within naturalslopeslib while with the second method, you can set the slope names from the calling mod. In both cases, the shape update behaviour is handled automatically by the library according to the settings and the availability of poschangelib and twmlib.
+You may register slopes in two ways: letting the mod generating all the stuff or getting the definitions and registering the nodes in the calling mod. With the first method, slope nodes will be registered within slopeslib while with the second method, you can set the slope names from the calling mod. In both cases, the shape update behaviour is handled automatically by the library according to the settings and the availability of poschangelib and twmlib.
 
-For the first method, just call naturalslopeslib.register_slopes.
-
-For example:
-
-naturalslopeslib.register_slopes("default:dirt")
-
-You can use naturalslopeslib.get_all_shapes to get the name of the slope nodes.
-
-For the second method, get the slope definitions from naturalslopeslib.get_slope_defs and register the four nodes manually with the desired names with minetest.register_node. When done, call naturalslopeslib.set_slopes to link all the different shapes.
+For the first method, just call slopeslib.register_slopes.
 
 For example:
 
-local slope_defs = naturalslopeslib.get_slope_defs("defaut:dirt")
+slopeslib.register_slopes("default:dirt")
+
+You can use slopeslib.get_all_shapes to get the name of the slope nodes.
+
+For the second method, get the slope definitions from slopeslib.get_slope_defs and register the four nodes manually with the desired names with minetest.register_node. When done, call slopeslib.set_slopes to link all the different shapes.
+
+For example:
+
+local slope_defs = slopeslib.get_slope_defs("defaut:dirt")
 local slope_names = {"default:dirt_slope", "default:dirt_inner_corner", "default:dirt_outer_corner", "default:dirt_pike"}
 for i, def in ipairs(slope_defs) do
 	minetest.register_node(slope_names[i], def)
 end
-naturalslopeslib.set_slopes("default:dirt", slope_names[1], slope_names[2], slope_names[3], slope_names[4], factors)
+slopeslib.set_slopes("default:dirt", slope_names[1], slope_names[2], slope_names[3], slope_names[4], factors)
 
 Regarding dependencies, the slopes are defined by copying the current definition of the original node. This means that modifications applied to the original node after the slopes are registered are not applied to slopes. If you want the slopes to act like the original nodes no matter what happen to their definition, you can call naturalslopes.propagate_overrides() before or after registering slopes. That way all future call to minetest.override_item (even from other unknown mods) will also apply to slopes silently, removing the need to explicitely define mod requirements.
 
@@ -102,7 +102,7 @@ A table containing references to various shape. The type of references can eithe
 Registration API
 ----------------
 
-### naturalslopeslib.default_definition
+### slopeslib.default_definition
 
 This tables holds default definition override for newly registered slopes. When using register_slope, they are added to def_changes if not already set to avoid copy/pasting a lot of things and automate some behaviours.
 
@@ -121,14 +121,14 @@ This tables holds default definition override for newly registered slopes. When 
 
 Note that changes to default_definitions are not retroactives. If the defaults are changed on the run, all slopes that were previously registered are not affected.
 
-Good practices are setting the defaults before registering your slopes, then calling naturalslopeslib.reset_defaults() to prevent your settings to effect further declarations.
+Good practices are setting the defaults before registering your slopes, then calling slopeslib.reset_defaults() to prevent your settings to effect further declarations.
 
-### naturalslopeslib.reset_defaults()
+### slopeslib.reset_defaults()
 
-* Resets naturalslopeslib.default_definition to the less-impacting values.
+* Resets slopeslib.default_definition to the less-impacting values.
 * These defaults are as follow {drop_source = false, tiles = {}, groups = {}}
 
-### naturalslopeslib.register_slope(base_node_name, def_changes, update_chance, factors, color_convert)
+### slopeslib.register_slope(base_node_name, def_changes, update_chance, factors, color_convert)
 
 * Registers all slope shapes and automatic stomping for a full node.
 * `base_node_name` the full block node name.
@@ -148,7 +148,7 @@ Good practices are setting the defaults before registering your slopes, then cal
 
 About color palettes: The palette for slopes can only have 8 colors while the original one can hold up to 256 colors. A reduced palette must be provided for nodes which paramtype2 is "color" even if not all colors are used. To control how the palette values are converted, you may pass a function(int, bool) as `color_convert`. When the second parameter is true, the first parameter is the full block color index (from 0 to 255) and it must return an index for the slope color (from 0 to 7). When false the first parameter is the slope color index (from 0 to 7) and it must return an index for the full block color index (from 0 to 255).
 
-### naturalslopeslib.set_slopes(base_node_name, straight_name, inner_name, outer_name, pike_name, update_chance, factors)
+### slopeslib.set_slopes(base_node_name, straight_name, inner_name, outer_name, pike_name, update_chance, factors)
 
 * Link existing nodes. Same as register_slopes but without registering new nodes. Use it when the shapes are already registered from eslewhere. The node definitions are not changed at all.
 * `base_node_name` the full node name.
@@ -160,12 +160,12 @@ About color palettes: The palette for slopes can only have 8 colors while the or
 * `factors` optional table for chance factors. By default each factor is 1.
 * returns ReplacementTable.
 
-### naturalslopeslib.register_sloped_stomp(source_node_name, dest_node_name, stomp_desc)
+### slopeslib.register_sloped_stomp(source_node_name, dest_node_name, stomp_desc)
 
 * Requires `poschangelib`. If the mod is not installed, this function will do nothing.
 * Register `stomp_desc` from all shapes of `source_node_name` to `dest_node_name`.
 
-### naturalslopeslib.propagate_overrides()
+### slopeslib.propagate_overrides()
 
 * Once called, calling minetest.override_item from that point will also apply the modifications to the corresponding slopes. Once called, this behaviour cannot be disabled.
 
@@ -173,7 +173,7 @@ About color palettes: The palette for slopes can only have 8 colors while the or
 Getters
 -------
 
-### naturalslopeslib.get_slope_defs(base_node_name, def_changes)
+### slopeslib.get_slope_defs(base_node_name, def_changes)
 
 * `base_node_name` the full block node name.
 * `def_changes` changes to apply from the base node definition.
@@ -189,23 +189,23 @@ Getters
 
 Warning: The palette for slopes can only have 8 colors while the original one can hold up to 256 colors. A reduced palette must be provided for nodes which paramtype2 is "color" even if not all colors are used.
 
-### naturalslopeslib.get_regular_node_name(slope_node_name)
+### slopeslib.get_regular_node_name(slope_node_name)
 
 * `slope_node_name` a node name.
 * returns the name of the regular node (the unslopped one). Nil if it is not a slope node.
 * It may be unnaccurate as it checks only if the name follows the internal pattern for slope names.
 
-### naturalslopeslib.get_replacement(source_node_name)
+### slopeslib.get_replacement(source_node_name)
 
 * `source_node_name` a registered node name.
 * returns a SlopeDef. Nil if no slopes are registered.
 
-### naturalslopeslib.get_replacement_id(source_id)
+### slopeslib.get_replacement_id(source_id)
 
 * `source_id` the id of the node.
 * returns a ReplacementTable with node ids as values. Nil if no slopes are registered.
 
-### naturalslopeslib.get_all_shapes(source_node_name)
+### slopeslib.get_all_shapes(source_node_name)
 
 Returns the node and all it's slope names in a table {source, straight, inner corner, outer corner, pike}. Returns {source} if there are no slopes for this node.
 * `source_node_name` The full block node name.
@@ -214,22 +214,22 @@ Returns the node and all it's slope names in a table {source, straight, inner co
 Shape update API
 ----------------
 
-### naturalslopeslib.is_free_for_shape_update(pos)
+### slopeslib.is_free_for_shape_update(pos)
 
 * Checks if a node is considered free for defining which shape could be picked.
 * `pos` the position of the node to check (probably a neighbour of a candidate to shape update).
 * returns true if the node is free, false if occupide, nil if unknown (not loaded)
 
-### naturalslopeslib.area_is_free_for_shape_update(area, data, index)
+### slopeslib.area_is_free_for_shape_update(area, data, index)
 
 * Checks if a node is considered free for defining which shape could be picked.
-* Was previously named naturalslopeslib.area_is_free_for_erosion.
+* Was previously named slopeslib.area_is_free_for_erosion.
 * `area` VoxelArea to use.
 * `data` Data from VoxelManip.
 * `index` position in area.
 * returns true if the node is free, false if occupide, nil if unknown (not loaded)
 
-### naturalslopeslib.get_replacement_node(pos, node, [area, data, param2_data])
+### slopeslib.get_replacement_node(pos, node, [area, data, param2_data])
 
 * Get the replacement node according to it's surroundings. This function exists in two formats, for a single position or a VoxelArea
 * In both case, it returns the parameters to update the node or nil when no replacement is available.
@@ -245,7 +245,7 @@ Shape update API
   * `param2_data` param2 data from VoxelManip, nil for single position update.
   * Returns a table with id and param2_data.
 
-### naturalslopeslib.chance_update_shape(pos, node, factor, type)
+### slopeslib.chance_update_shape(pos, node, factor, type)
 
 * Do shape update when random roll passes on a single node.
 * `pos` the position to update.
@@ -254,16 +254,16 @@ Shape update API
 * `type` optional update type for chance factors. Either "mapgen", "stomp", "place" or "time". When not set, the chance factor is ignored (as if it is 1). It is cumulative with `factor`.
 * returns true if an update was done, false otherwise.
 
-### naturalslopeslib.update_shape(pos, node)
+### slopeslib.update_shape(pos, node)
 
 * Do shape update disregarding chances.
 * `pos` the position to update.
 * `node` the node at pos.
 * returns true if an update was done, false otherwise.
 
-### naturalslopeslib.update_shape_on_walk(player, pos, node, desc, trigger_meta)
+### slopeslib.update_shape_on_walk(player, pos, node, desc, trigger_meta)
 
-* Callback for poschangelib, to get the same effect as naturalslopeslib.update_shape.
+* Callback for poschangelib, to get the same effect as slopeslib.update_shape.
 
 
 Map generation
@@ -272,13 +272,13 @@ Map generation
 These functions allows to tweak the map generation to change the default behaviour.
 Which is updating an area on generation after other map generation functions.
 
-### naturalslopeslib.set_manual_map_generation()
+### slopeslib.set_manual_map_generation()
 
 * Disables the default registration to handle the mapgen manually.
 * Once it is called, other mods should take care of handling shape update
   on generation. Otherwise nothing is done.
 
-### naturalslopeslib.area_chance_update_shape(minp, maxp, factor, skip, type)
+### slopeslib.area_chance_update_shape(minp, maxp, factor, skip, type)
 
 * Massive shape update with VoxelManip. This is the VoxelManip on generation
   method.
@@ -288,7 +288,7 @@ Which is updating an area on generation after other map generation functions.
 * `skip` optional random skip, roughfly ignore skip/2 to skip nodes.
 * `type` optional update type for chance factors. Either "mapgen", "stomp", "place" or "time". When not set, the chance factor is ignored (as if it is 1). It is cumulative with `factor`.
 
-### naturalslopeslib.register_progressive_area_update(minp, maxp, factor, skip, type)
+### slopeslib.register_progressive_area_update(minp, maxp, factor, skip, type)
 
 * Mark an area to be updated progressively. This is the Progressive on generation
   method. The area is not updated instantly but added to a list.
@@ -304,49 +304,49 @@ Settings getters
 
 These functions get the current settings with the default value if not set.
 
-### naturalslopeslib.setting_enable_surface_update()
+### slopeslib.setting_enable_surface_update()
 
 * Returns true or false. Always false if twmlib is not available.
 
-### naturalslopeslib.setting_enable_shape_on_walk()
+### slopeslib.setting_enable_shape_on_walk()
 
 * Returns true or false. Always false if poschangelib is not available.
 
-### naturalslopeslib.setting_enable_shape_on_generation()
+### slopeslib.setting_enable_shape_on_generation()
 
-* Returns true or false. It may not reflect the actual behaviour if the default mapgen behaviour was disabled by naturalslopeslib.set_manual_map_generation.
+* Returns true or false. It may not reflect the actual behaviour if the default mapgen behaviour was disabled by slopeslib.set_manual_map_generation.
 
-### naturalslopeslib.setting_generation_method()
+### slopeslib.setting_generation_method()
 
-* Returns "VoxelManip" or "Progressive". It may not reflect the actual behaviour if the default mapgen behaviour was disabled by naturalslopeslib.set_manual_map_generation.
+* Returns "VoxelManip" or "Progressive". It may not reflect the actual behaviour if the default mapgen behaviour was disabled by slopeslib.set_manual_map_generation.
 
-### naturalslopeslib.setting_generation_factor()
+### slopeslib.setting_generation_factor()
 
-* Returns the chance factor for map generation to reflect the landscape age. It is cumulative with the "mapgen" chance factor of each node if any is defined. It may not reflect the actual behaviour if the default mapgen behaviour was disabled by naturalslopeslib.set_manual_map_generation.
+* Returns the chance factor for map generation to reflect the landscape age. It is cumulative with the "mapgen" chance factor of each node if any is defined. It may not reflect the actual behaviour if the default mapgen behaviour was disabled by slopeslib.set_manual_map_generation.
 
-### naturalslopeslib.setting_stomp_factor()
+### slopeslib.setting_stomp_factor()
 
 * Returns the chace factor when walking on nodes. It is cumulative with the "stomp" chance factor of each node if any is defined.
 * This factor is applied upon node registration.
 
-### naturalslopeslib.setting_dig_place_factor()
+### slopeslib.setting_dig_place_factor()
 
 * Returns the chace factor when the neighbouring nodes change. It is cumulative with the "place" chance factor of each node if any is defined.
 
-### naturalslopeslib.setting_time_factor()
+### slopeslib.setting_time_factor()
 
 * Returns the chace factor on timed update. It is cumulative with the "time" chance factor of each node if any is defined.
 * This factor is applied upon node registration.
 
-### naturalslopeslib.setting_generation_skip()
+### slopeslib.setting_generation_skip()
 
-* Returns the approximate number of nodes skipped for each node. It may not reflect the actual behaviour if the default mapgen behaviour was disabled by naturalslopeslib.set_manual_map_generation.
+* Returns the approximate number of nodes skipped for each node. It may not reflect the actual behaviour if the default mapgen behaviour was disabled by slopeslib.set_manual_map_generation.
 
-### naturalslopeslib.setting_enable_shape_on_dig_place()
+### slopeslib.setting_enable_shape_on_dig_place()
 
 * Returns true or false. This setting is read only on startup and may not reflect the actual value if it was changed while the server is running.
 
-### naturalslopeslib.setting_smooth_rendering()
+### slopeslib.setting_smooth_rendering()
 
 * Returns true or false. This setting is read only when registering nodes and may not reflect the actual value if it was changed while the server is running.
 

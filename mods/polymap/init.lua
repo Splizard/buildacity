@@ -24,7 +24,7 @@ minetest.register_node("polymap:water", {
     is_ground_content = true,
 })
 
-naturalslopeslib.register_slope("polymap:grass", {
+slopeslib.register_slope("polymap:grass", {
         description = S("Grass Slope"),
         pointable = false, --because selection box is ugly.
     },

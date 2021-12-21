@@ -1,5 +1,5 @@
 -- Global namespace for functions
-naturalslopeslib = {
+slopeslib = {
 	_register_on_generated = true,
 	_propagate_overrides = false,
 	default_definition = {} -- initialized below
@@ -15,17 +15,17 @@ for _, name in ipairs(minetest.get_modnames()) do
 	end
 end
 
-function naturalslopeslib.reset_defaults()
-	naturalslopeslib.default_definition = {
+function slopeslib.reset_defaults()
+	slopeslib.default_definition = {
 		drop_source = false,
 		tiles = {},
 		groups = {}
 	}
 end
-naturalslopeslib.reset_defaults()
+slopeslib.reset_defaults()
 
 --- Get the name of the regular node from a slope, or nil.
-function naturalslopeslib.get_regular_node_name(node_name)
+function slopeslib.get_regular_node_name(node_name)
 	if string.find(node_name, ":slope_") == nil then
 		return nil
 	end
@@ -38,82 +38,82 @@ function naturalslopeslib.get_regular_node_name(node_name)
 	return nil
 end
 --- {Private} Get the default node name for slopes from a subname.
--- For example 'dirt' will be named 'naturalslopeslib:slope_dirt'
--- See naturalslopeslib.get_all_shapes to get the actual node names.
-function naturalslopeslib.get_straight_slope_name(subname)
+-- For example 'dirt' will be named 'slopeslib:slope_dirt'
+-- See slopeslib.get_all_shapes to get the actual node names.
+function slopeslib.get_straight_slope_name(subname)
 	return minetest.get_current_modname() .. ':slope_' .. subname
 end
-function naturalslopeslib.get_inner_corner_slope_name(subname)
+function slopeslib.get_inner_corner_slope_name(subname)
 	return minetest.get_current_modname() .. ':slope_inner_' .. subname
 end
-function naturalslopeslib.get_outer_corner_slope_name(subname)
+function slopeslib.get_outer_corner_slope_name(subname)
 	return minetest.get_current_modname() .. ':slope_outer_' .. subname
 end
-function naturalslopeslib.get_pike_slope_name(subname)
+function slopeslib.get_pike_slope_name(subname)
 	return minetest.get_current_modname() .. ':slope_pike_' .. subname
 end
 
 -- Set functions to get configuration and default values
-function naturalslopeslib.setting_enable_surface_update()
+function slopeslib.setting_enable_surface_update()
 	if not twmlib_available then return false end
-	local value = minetest.settings:get_bool('naturalslopeslib_enable_surface_update')
+	local value = minetest.settings:get_bool('slopeslib_enable_surface_update')
 	if value == nil then return true end
 	return value
 end
-function naturalslopeslib.setting_enable_shape_on_walk()
+function slopeslib.setting_enable_shape_on_walk()
 	if not poschangelib_available then return false end
-	local value = minetest.settings:get_bool('naturalslopeslib_enable_shape_on_walk')
+	local value = minetest.settings:get_bool('slopeslib_enable_shape_on_walk')
 	if value == nil then return true end
 	return value
 end
-function naturalslopeslib.setting_enable_shape_on_generation()
-	local value = minetest.settings:get_bool('naturalslopeslib_register_default_slopes')
+function slopeslib.setting_enable_shape_on_generation()
+	local value = minetest.settings:get_bool('slopeslib_register_default_slopes')
 	if value == nil then value = true end
 	return value
 end
-function naturalslopeslib.setting_generation_method()
-	local value = minetest.settings:get('naturalslopeslib_generation_method')
+function slopeslib.setting_generation_method()
+	local value = minetest.settings:get('slopeslib_generation_method')
 	if value == nil then value = 'VoxelManip' end
 	return value
 end
-function naturalslopeslib.setting_generation_factor()
-	return tonumber(minetest.settings:get('naturalslopeslib_update_shape_generate_factor')) or 0
+function slopeslib.setting_generation_factor()
+	return tonumber(minetest.settings:get('slopeslib_update_shape_generate_factor')) or 0
 end
-function naturalslopeslib.setting_stomp_factor()
-	return tonumber(minetest.settings:get('naturalslopeslib_update_shape_stomp_factor')) or 1.0
+function slopeslib.setting_stomp_factor()
+	return tonumber(minetest.settings:get('slopeslib_update_shape_stomp_factor')) or 1.0
 end
-function naturalslopeslib.setting_dig_place_factor()
-	return tonumber(minetest.settings:get('naturalslopeslib_update_shape_dig_place_factor')) or 1.0
+function slopeslib.setting_dig_place_factor()
+	return tonumber(minetest.settings:get('slopeslib_update_shape_dig_place_factor')) or 1.0
 end
-function naturalslopeslib.setting_time_factor()
-	return tonumber(minetest.settings:get('naturalslopeslib_update_shape_time_factor')) or 1.0
+function slopeslib.setting_time_factor()
+	return tonumber(minetest.settings:get('slopeslib_update_shape_time_factor')) or 1.0
 end
-function naturalslopeslib.setting_generation_skip()
-	return tonumber(minetest.settings:get('naturalslopeslib_update_shape_generate_skip')) or 0
+function slopeslib.setting_generation_skip()
+	return tonumber(minetest.settings:get('slopeslib_update_shape_generate_skip')) or 0
 end
-function naturalslopeslib.setting_enable_shape_on_dig_place()
-	local value = minetest.settings:get_bool('naturalslopeslib_enable_shape_on_dig_place')
+function slopeslib.setting_enable_shape_on_dig_place()
+	local value = minetest.settings:get_bool('slopeslib_enable_shape_on_dig_place')
 	if value == nil then value = true end
 	return value
 end
-function naturalslopeslib.setting_smooth_rendering()
-	local value = minetest.settings:get_bool('naturalslopeslib_smooth_rendering')
+function slopeslib.setting_smooth_rendering()
+	local value = minetest.settings:get_bool('slopeslib_smooth_rendering')
 	if value == nil then value = false end
 	return true
 end
 
-function naturalslopeslib.set_manual_map_generation()
-	naturalslopeslib._register_on_generated = false
+function slopeslib.set_manual_map_generation()
+	slopeslib._register_on_generated = false
 end
 
-function naturalslopeslib.propagate_overrides()
-	if naturalslopeslib._propagate_overrides then
+function slopeslib.propagate_overrides()
+	if slopeslib._propagate_overrides then
 		return
 	end
-	naturalslopeslib._propagate_overrides = true
+	slopeslib._propagate_overrides = true
 	local old_override = minetest.override_item
 	minetest.override_item = function(name, redefinition)
-		local shapes = naturalslopeslib.get_all_shapes(name)
+		local shapes = slopeslib.get_all_shapes(name)
 		if #shapes == 1 then
 			old_override(name, redefinition)
 			return

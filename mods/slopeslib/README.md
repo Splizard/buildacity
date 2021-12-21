@@ -17,7 +17,7 @@ Thus half-blocks like slopes are still considered as a single block. A single sl
 can turn back to a full node and vice-versa and half-blocks are not considered
 buildable upon (they will transform back into full block).
 
-See naturalslopeslib_api.txt for the documentation of the API.
+See slopeslib_api.txt for the documentation of the API.
 
 ## Dependencies
 

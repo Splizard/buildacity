@@ -7,13 +7,13 @@ The semantic of version number is 'Major.minor'. Minor updates are retro-compati
 ------------------
 
 ### Added
-- `naturalslopeslib.default_definition` and `naturalslopeslib.reset_defaults` to factorize common definition.
+- `slopeslib.default_definition` and `slopeslib.reset_defaults` to factorize common definition.
 - `color_convert` function as parameter to slope definitions to convert color values between 256 and 8 values.
 
 ### Fixed
-- `naturalslopeslib.chance_update_shape` and `naturalslopeslib.update_shape` return true only when the node actually changed.
+- `slopeslib.chance_update_shape` and `slopeslib.update_shape` return true only when the node actually changed.
 - Keeping color value when switching shape.
-- Removing properties with "nil" with `naturalslopeslib.register_slopes`.
+- Removing properties with "nil" with `slopeslib.register_slopes`.
 
 
 [1.2] - 2021-02-23
@@ -21,7 +21,7 @@ The semantic of version number is 'Major.minor'. Minor updates are retro-compati
 
 ### Added
 - Support for colored nodes (with palette size limitation).
-- `naturalslopeslib.propagate_overrides` to remove the need for depedencies.
+- `slopeslib.propagate_overrides` to remove the need for depedencies.
 - Stomp, dig/place and time factor in settings.
 
 ### Fixed
@@ -64,7 +64,7 @@ Requires Minetest 5.
 
 ### Changed
 - `get_slope_names` return each name indexed by type.
-- Namespace change from `naturalslopes` to `naturalslopeslib`.
+- Namespace change from `naturalslopes` to `slopeslib`.
 - Timed update uses `twmlib`.
 - Registration is shortened by passing changes from the original definition instead of a full copy.
 - Use underscore for domain name in settingstype for consistency with other mods.

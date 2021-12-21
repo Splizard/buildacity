@@ -35,10 +35,10 @@ local function add_replacement(source_name, update_chance, chance_factors, fixed
 		oc_name = fixed_replacements[3]
 		pike_name = fixed_replacements[4]
 	else
-		straight_name = naturalslopeslib.get_straight_slope_name(subname)
-		ic_name = naturalslopeslib.get_inner_corner_slope_name(subname)
-		oc_name = naturalslopeslib.get_outer_corner_slope_name(subname)
-		pike_name = naturalslopeslib.get_pike_slope_name(subname)
+		straight_name = slopeslib.get_straight_slope_name(subname)
+		ic_name = slopeslib.get_inner_corner_slope_name(subname)
+		oc_name = slopeslib.get_outer_corner_slope_name(subname)
+		pike_name = slopeslib.get_pike_slope_name(subname)
 	end
 	local source_id = minetest.get_content_id(source_name)
 	local straight_id = minetest.get_content_id(straight_name)
@@ -88,17 +88,17 @@ end
 --- Get replacement description of a node.
 -- Contains replacement names in either source or (straight, inner, outer)
 -- and chance.
-function naturalslopeslib.get_replacement(source_node_name)
+function slopeslib.get_replacement(source_node_name)
 	return replacements[source_node_name]
 end
 --- Get replacement description of a node by content id for VoxelManip.
 -- Contains replacement ids in either source or (straight, inner, outer)
 -- and chance.
-function naturalslopeslib.get_replacement_id(source_id)
+function slopeslib.get_replacement_id(source_id)
 	return replacement_ids[source_id]
 end
 
-function naturalslopeslib.get_all_shapes(source_node_name)
+function slopeslib.get_all_shapes(source_node_name)
 	if replacements[source_node_name] then
 		local rp = replacements[source_node_name]
 		return {rp.source, rp.straight, rp.inner, rp.outer, rp.pike}
@@ -157,9 +157,9 @@ end
 --- {Private} Update the node definition for a straight slope
 local function get_straight_def(base_node_name, node_def)
 	node_def = apply_default_slope_def(base_node_name, node_def, 1)
-	if naturalslopeslib.setting_smooth_rendering() then
+	if slopeslib.setting_smooth_rendering() then
 		node_def.drawtype = 'mesh'
-		node_def.mesh = 'naturalslopeslib_straight.obj'
+		node_def.mesh = 'slopeslib_straight.obj'
 	else
 		node_def.drawtype = 'nodebox'
 		node_def.node_box = slope_straight_box
@@ -172,9 +172,9 @@ end
 --- {Private} Update the node definition for an inner corner
 local function get_inner_def(base_node_name, node_def)
 	node_def = apply_default_slope_def(base_node_name, node_def, 2)
-	if naturalslopeslib.setting_smooth_rendering() then
+	if slopeslib.setting_smooth_rendering() then
 		node_def.drawtype = 'mesh'
-		node_def.mesh = 'naturalslopeslib_inner.obj'
+		node_def.mesh = 'slopeslib_inner.obj'
 	else
 		node_def.drawtype = 'nodebox'
 		node_def.node_box = slope_inner_corner_box
@@ -187,9 +187,9 @@ end
 --- {Private} Update the node definition for an outer corner
 local function get_outer_def(base_node_name, node_def)
 	node_def = apply_default_slope_def(base_node_name, node_def, 3)
-	if naturalslopeslib.setting_smooth_rendering() then
+	if slopeslib.setting_smooth_rendering() then
 		node_def.drawtype = 'mesh'
-		node_def.mesh = 'naturalslopeslib_outer.obj'
+		node_def.mesh = 'slopeslib_outer.obj'
 	else
 		node_def.drawtype = 'nodebox'
 		node_def.node_box = slope_outer_corner_box
@@ -202,9 +202,9 @@ end
 --- {Private} Update the node definition for a pike
 local function get_pike_def(base_node_name, node_def, update_chance)
 	node_def = apply_default_slope_def(base_node_name, node_def, 4)
-	if naturalslopeslib.setting_smooth_rendering() then
+	if slopeslib.setting_smooth_rendering() then
 		node_def.drawtype = 'mesh'
-		node_def.mesh = 'naturalslopeslib_pike.obj'
+		node_def.mesh = 'slopeslib_pike.obj'
 	else
 		node_def.drawtype = 'nodebox'
 		node_def.node_box = slope_pike_box
@@ -225,7 +225,7 @@ local function convert_to_expanded_tiles_def(tiles)
 	end
 end
 
-function naturalslopeslib.get_slope_defs(base_node_name, def_changes)
+function slopeslib.get_slope_defs(base_node_name, def_changes)
 	local base_node_def = minetest.registered_nodes[base_node_name]
 	if not base_node_def then
 		minetest.log("error", "Trying to get slopes for an unknown node " .. (base_node_name or "nil"))
@@ -241,7 +241,7 @@ function naturalslopeslib.get_slope_defs(base_node_name, def_changes)
 		end
 	end
 	-- Handle default drop overrides
-	if not base_node_def.drop and not def_changes.drop and naturalslopeslib.default_definition.drop_source then
+	if not base_node_def.drop and not def_changes.drop and slopeslib.default_definition.drop_source then
 		-- If drop is not set and was not reseted
 		full_copy.drop = base_node_name
 	end
@@ -254,7 +254,7 @@ function naturalslopeslib.get_slope_defs(base_node_name, def_changes)
 		changes_copy.tiles = {{}}
 	end
 	convert_to_expanded_tiles_def(changes_copy.tiles)
-	local default_tile_changes = table.copy(naturalslopeslib.default_definition.tiles)
+	local default_tile_changes = table.copy(slopeslib.default_definition.tiles)
 	if not default_tile_changes or #default_tile_changes == 0 then
 		default_tile_changes = {{}}
 	end
@@ -284,13 +284,13 @@ function naturalslopeslib.get_slope_defs(base_node_name, def_changes)
 		end
 	end
 	-- Handle default groups
-	for group, value in pairs(naturalslopeslib.default_definition.groups) do
+	for group, value in pairs(slopeslib.default_definition.groups) do
 		if not def_changes.groups or def_changes.groups[group] == nil then
 			full_copy.groups[group] = value
 		end
 	end
 	-- Handle other values
-	for key, value in pairs(naturalslopeslib.default_definition) do
+	for key, value in pairs(slopeslib.default_definition) do
 		if key ~= "groups" and key ~= "drop_source" and key ~= "tiles" then
 			if changes_copy[key] == nil then
 				if type(value) == "table" then
@@ -331,7 +331,7 @@ end
 -- @param factors (optional): chance factor for each type.
 -- @param color_convert (optional): the function to convert color palettes
 -- @return Table of slope names: [straight, inner, outer, pike] or nil on error.
-function naturalslopeslib.register_slope(base_node_name, def_changes, update_chance, factors, color_convert)
+function slopeslib.register_slope(base_node_name, def_changes, update_chance, factors, color_convert)
 	if not update_chance then
 		minetest.log('error', 'Natural slopes: chance is not set for node ' .. base_node_name)
 		return
@@ -345,20 +345,20 @@ function naturalslopeslib.register_slope(base_node_name, def_changes, update_cha
 	-- Get new definitions
 	local subname = string.sub(base_node_name, string.find(base_node_name, ':') + 1)
 	local slope_names = {
-		naturalslopeslib.get_straight_slope_name(subname),
-		naturalslopeslib.get_inner_corner_slope_name(subname),
-		naturalslopeslib.get_outer_corner_slope_name(subname),
-		naturalslopeslib.get_pike_slope_name(subname)
+		slopeslib.get_straight_slope_name(subname),
+		slopeslib.get_inner_corner_slope_name(subname),
+		slopeslib.get_outer_corner_slope_name(subname),
+		slopeslib.get_pike_slope_name(subname)
 	}
-	local slope_defs = naturalslopeslib.get_slope_defs(base_node_name, def_changes)
+	local slope_defs = slopeslib.get_slope_defs(base_node_name, def_changes)
 	-- Register all slopes
-	local stomp_factor = naturalslopeslib.setting_stomp_factor()
+	local stomp_factor = slopeslib.setting_stomp_factor()
 	for i, name in ipairs(slope_names) do
 		minetest.register_node(name, slope_defs[i])
 		-- Register walk listener
-		if naturalslopeslib.setting_enable_shape_on_walk() then
+		if slopeslib.setting_enable_shape_on_walk() then
 			poschangelib.register_stomp(name,
-				naturalslopeslib.update_shape_on_walk,
+				slopeslib.update_shape_on_walk,
 				{name = name .. '_upd_shape',
 				chance = update_chance * chance_factors.stomp * stomp_factor, priority = 500})
 		end
@@ -367,32 +367,32 @@ function naturalslopeslib.register_slope(base_node_name, def_changes, update_cha
 	local colored = base_node_def.paramtype2 == "color"
 	add_replacement(base_node_name, update_chance, chance_factors, slope_names, colored, color_convert)
 	-- Enable on walk update for base node
-	if naturalslopeslib.setting_enable_shape_on_walk() then
+	if slopeslib.setting_enable_shape_on_walk() then
 		poschangelib.register_stomp(base_node_name,
-			naturalslopeslib.update_shape_on_walk,
+			slopeslib.update_shape_on_walk,
 			{name = base_node_name .. '_upd_shape',
 			chance = update_chance * chance_factors.stomp * stomp_factor, priority = 500})
 	end
 	-- Enable surface update
-	local time_factor = naturalslopeslib.setting_time_factor()
-	if naturalslopeslib.setting_enable_surface_update() then
+	local time_factor = slopeslib.setting_time_factor()
+	if slopeslib.setting_enable_surface_update() then
 		twmlib.register_twm({
 			nodenames = {base_node_name, slope_defs[1], slope_defs[2], slope_defs[3], slope_defs[4]},
 			chance = update_chance * chance_factors.time * time_factor,
-			action = naturalslopeslib.update_shape
+			action = slopeslib.update_shape
 		})
 	end
-	return naturalslopeslib.get_replacement(base_node_name)
+	return slopeslib.get_replacement(base_node_name)
 end
 
 --- Add a slopping behaviour to existing nodes.
-function naturalslopeslib.set_slopes(base_node_name, straight_name, inner_name, outer_name, pike_name, update_chance, factors, color_convert)
+function slopeslib.set_slopes(base_node_name, straight_name, inner_name, outer_name, pike_name, update_chance, factors, color_convert)
 	-- Defensive checks
 	if not minetest.registered_nodes[base_node_name] then
 		if not base_node_name then
-			minetest.log('error', 'naturalslopeslib.set_slopes failed: base node_name is nil.')
+			minetest.log('error', 'slopeslib.set_slopes failed: base node_name is nil.')
 		else
-			minetest.log('error', 'naturalslopeslib.set_slopes failed: ' .. base_node_name .. ' is not registered.')
+			minetest.log('error', 'slopeslib.set_slopes failed: ' .. base_node_name .. ' is not registered.')
 		end
 		return
 	end
@@ -400,7 +400,7 @@ function naturalslopeslib.set_slopes(base_node_name, straight_name, inner_name, 
 	or not minetest.registered_nodes[inner_name]
 	or not minetest.registered_nodes[outer_name]
 	or not minetest.registered_nodes[pike_name] then
-		minetest.log('error', 'naturalslopeslib.set_slopes failed: one of the slopes for ' .. base_node_name .. ' is not registered.')
+		minetest.log('error', 'slopeslib.set_slopes failed: one of the slopes for ' .. base_node_name .. ' is not registered.')
 		return
 	end
 	if not update_chance then
@@ -413,24 +413,24 @@ function naturalslopeslib.set_slopes(base_node_name, straight_name, inner_name, 
 	local colored = minetest.registered_nodes[base_node_name].paramtype2 == "color"
 	add_replacement(base_node_name, update_chance, chance_factors, slope_names, colored, color_convert)
 	-- Set surface update
-	if naturalslopeslib.setting_enable_surface_update() then
-		local time_factor = naturalslopeslib.setting_time_factor()
+	if slopeslib.setting_enable_surface_update() then
+		local time_factor = slopeslib.setting_time_factor()
 		twmlib.register_twm({
 			nodenames = {base_node_name, straight_name, inner_name, outer_name, pike_name},
 			chance = update_chance * chance_factors.time * time_factor,
-			action = naturalslopeslib.update_shape
+			action = slopeslib.update_shape
 		})
 	end
 	-- Set walk listener for the 5 nodes
-	if naturalslopeslib.setting_enable_shape_on_walk() then
-		local stomp_factor = naturalslopeslib.setting_stomp_factor()
+	if slopeslib.setting_enable_shape_on_walk() then
+		local stomp_factor = slopeslib.setting_stomp_factor()
 		local stomp_desc = {name = base_node_name .. '_upd_shape',
 			chance = update_chance * chance_factors.stomp * stomp_factor, priority = 500}
-		poschangelib.register_stomp(base_node_name, naturalslopeslib.update_shape_on_walk, stomp_desc)
+		poschangelib.register_stomp(base_node_name, slopeslib.update_shape_on_walk, stomp_desc)
 		for i, name in pairs(slope_names) do
-			poschangelib.register_stomp(name, naturalslopeslib.update_shape_on_walk, stomp_desc)
+			poschangelib.register_stomp(name, slopeslib.update_shape_on_walk, stomp_desc)
 		end
 	end
-	return naturalslopeslib.get_replacement(base_node_name)
+	return slopeslib.get_replacement(base_node_name)
 end
 

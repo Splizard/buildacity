@@ -52,9 +52,9 @@ end
 local function pick_replacement(slope_type, name, old_param2, param2, for_area)
 	local replacement
 	if for_area then
-		replacement = naturalslopeslib.get_replacement_id(name)
+		replacement = slopeslib.get_replacement_id(name)
 	else
-		replacement = naturalslopeslib.get_replacement(name)
+		replacement = slopeslib.get_replacement(name)
 	end
 	if not replacement then return nil end
 	local dest_node_name = nil
@@ -88,7 +88,7 @@ Surrounding checks and get replacement
 
 --- Check if a node is considered empty to switch shape.
 -- @param pos The position to check
-function naturalslopeslib.is_free_for_shape_update(pos)
+function slopeslib.is_free_for_shape_update(pos)
 	if not pos then return nil end
 	local node = minetest.get_node_or_nil(pos)
 	if node == nil then
@@ -98,14 +98,14 @@ function naturalslopeslib.is_free_for_shape_update(pos)
 end
 
 local air_id = minetest.get_content_id('air')
-function naturalslopeslib.area_is_free_for_shape_update(area, data, index)
+function slopeslib.area_is_free_for_shape_update(area, data, index)
 	if not area:containsi(index) then
 		return nil
 	end
 	return data[index] == air_id
 end
 -- Deprecated name
-naturalslopeslib.area_is_free_for_erosion = naturalslopeslib.area_is_free_for_shape_update
+slopeslib.area_is_free_for_erosion = slopeslib.area_is_free_for_shape_update
 
 --- Get the replacement node according to it's surroundings.
 -- @param pos The position of the node or index with VoxelArea.
@@ -116,7 +116,7 @@ naturalslopeslib.area_is_free_for_erosion = naturalslopeslib.area_is_free_for_sh
 -- @return A node to use with minetest.set_node
 -- or a table with id and param2_data if called with an area.
 -- Nil if no replacement is found or a neighbour cannot be read.
-function naturalslopeslib.get_replacement_node(pos, node, area, data, param2_data)
+function slopeslib.get_replacement_node(pos, node, area, data, param2_data)
 	-- Set functions and data according to update mode: single or VoxelManip
 	local is_free = nil
 	local new_pos = nil
@@ -127,7 +127,7 @@ function naturalslopeslib.get_replacement_node(pos, node, area, data, param2_dat
 	if area then
 		for_area = true
 		is_free = function (at_index) -- always use with new_pos
-			return naturalslopeslib.area_is_free_for_shape_update(area, data, at_index)
+			return slopeslib.area_is_free_for_shape_update(area, data, at_index)
 		end
 		new_pos = function(add) -- Get new index from current with add position
 			local area_pos = area:position(pos)
@@ -136,7 +136,7 @@ function naturalslopeslib.get_replacement_node(pos, node, area, data, param2_dat
 		node_name = node
 		old_param2 = param2_data[pos]
 	else
-		is_free = naturalslopeslib.is_free_for_shape_update
+		is_free = slopeslib.is_free_for_shape_update
 		new_pos = function(add) return vector.add(pos, add) end
 		node_name = node.name
 		old_param2 = node.param2
@@ -237,16 +237,16 @@ Do the replacement
 --]]
 
 -- Do shape update when random roll passes on a single node.
-function naturalslopeslib.chance_update_shape(pos, node, factor, type)
+function slopeslib.chance_update_shape(pos, node, factor, type)
 	if factor == nil then factor = 1 end
-	local replacement = naturalslopeslib.get_replacement(node.name)
+	local replacement = slopeslib.get_replacement(node.name)
 	if not replacement then return false end
 	local chance_factor = 1
 	if type == "mapgen" or type == "stomp" or type == "place" or type == "time" then
 		chance_factor = replacement.chance_factors[type]
 	end
 	if (math.random() * (replacement.chance * factor * chance_factor)) < 1.0 then
-		return naturalslopeslib.update_shape(pos, node)
+		return slopeslib.update_shape(pos, node)
 	end
 	return false
 end
@@ -255,8 +255,8 @@ end
 -- @param pos The position of the node.
 -- @param node The node at that position.
 -- @return True if the node was updated, false otherwise.
-function naturalslopeslib.update_shape(pos, node)
-	local replacement = naturalslopeslib.get_replacement_node(pos, node)
+function slopeslib.update_shape(pos, node)
+	local replacement = slopeslib.get_replacement_node(pos, node)
 	if replacement and (replacement.name ~= node.name or node.param2 ~= replacement.param2) then
 		minetest.set_node(pos, replacement)
 		return true
@@ -314,7 +314,7 @@ local buffer_param = {}
 -- @param progressive_edges (optional) When true, edges are generated progressively (default)
 -- @param type (optional) Transformation type for chance factor.
 -- at every loop.
-function naturalslopeslib.area_chance_update_shape(minp, maxp, factor, skip, progressive_edges, type)
+function slopeslib.area_chance_update_shape(minp, maxp, factor, skip, progressive_edges, type)
 	if not skip then skip = 0 end
 	if progressive_edges == nil then progressive_edges = true end
 	-- Run on every block
@@ -328,7 +328,7 @@ function naturalslopeslib.area_chance_update_shape(minp, maxp, factor, skip, pro
 	if progressive_edges then
 		local edges = get_edges(minp, maxp)
 		for _, edge in ipairs(edges) do
-			naturalslopeslib.register_progressive_area_update(edge[1], edge[2], factor, skip, type, {x = edge[3][1], y = edge[3][2], z = edge[3][3]})
+			slopeslib.register_progressive_area_update(edge[1], edge[2], factor, skip, type, {x = edge[3][1], y = edge[3][2], z = edge[3][3]})
 		end
 	end
 	while i <= imax do
@@ -338,14 +338,14 @@ function naturalslopeslib.area_chance_update_shape(minp, maxp, factor, skip, pro
 		or y == 0 or y == area.zstride - 1 then
 			-- Skip edges
 		else
-			local replacement = naturalslopeslib.get_replacement_id(data[i])
+			local replacement = slopeslib.get_replacement_id(data[i])
 			if replacement ~= nil then
 				local chance_factor = 1
 				if type == "mapgen" or type == "stomp" or type == "place" or type == "time" then
 					chance_factor = replacement.chance_factors[type]
 				end
 				if math.random() * (replacement.chance * factor * chance_factor) < 1.0 then
-					local new_data = naturalslopeslib.get_replacement_node(i, data[i], area, data, param2_data)
+					local new_data = slopeslib.get_replacement_node(i, data[i], area, data, param2_data)
 					if new_data then
 						data[i] = new_data.id
 						if new_data.param2_data then
@@ -362,25 +362,25 @@ function naturalslopeslib.area_chance_update_shape(minp, maxp, factor, skip, pro
 	vm:write_to_map()
 end
 
-naturalslopeslib.progressive_area_updates = {}
+slopeslib.progressive_area_updates = {}
 
-function naturalslopeslib.register_progressive_area_update(minp, maxp, factor, skip, type, edge_normal)
+function slopeslib.register_progressive_area_update(minp, maxp, factor, skip, type, edge_normal)
 	if edge_normal ~= nil or minp.x == maxp.x or minp.y == maxp.y or minp.z == maxp.z then
 		-- Explicit edge or ignored
-		table.insert(naturalslopeslib.progressive_area_updates, {minp = minp, maxp = maxp,
+		table.insert(slopeslib.progressive_area_updates, {minp = minp, maxp = maxp,
 				factor = factor, skip = skip, i = 1, edge_normal = edge_normal})
 		return
 	end
 	-- else register the inner cube and all edges
 	-- The inner cube
-	table.insert(naturalslopeslib.progressive_area_updates, {
+	table.insert(slopeslib.progressive_area_updates, {
 			minp = vector.add(minp, 1),
 			maxp = vector.add(maxp, -1),
 			factor = factor, skip = skip, i = 1, edge_normal = nil})
 	local edges = get_edges(minp, maxp)
 	-- Register
 	for _, edge in ipairs(edges) do
-		table.insert(naturalslopeslib.progressive_area_updates, {
+		table.insert(slopeslib.progressive_area_updates, {
 				minp = edge[1], maxp = edge[2],
 				factor = factor, type = type, skip = skip, i = 1,
 				edge_normal = {x = edge[3][1], y = edge[3][2], z = edge[3][3]}
@@ -416,7 +416,7 @@ local function check_area_edges(area)
 end
 
 local function progressive_area_update(start_time)
-	if #naturalslopeslib.progressive_area_updates == 0 then
+	if #slopeslib.progressive_area_updates == 0 then
 		return true
 	end
 	if start_time == nil then
@@ -426,7 +426,7 @@ local function progressive_area_update(start_time)
 	local players = minetest.get_connected_players()
 	local processed_area_index = nil
 	local alt_processed_area_index = nil
-	for area_index, area in ipairs(naturalslopeslib.progressive_area_updates) do
+	for area_index, area in ipairs(slopeslib.progressive_area_updates) do
 		for _, p in ipairs(players) do
 			local minp = area.minp
 			local maxp = area.maxp
@@ -445,7 +445,7 @@ local function progressive_area_update(start_time)
 			end
 		end
 		if processed_area_index ~= nil then
-			local area = naturalslopeslib.progressive_area_updates[processed_area_index]
+			local area = slopeslib.progressive_area_updates[processed_area_index]
 		end
 	end
 	if processed_area_index == nil then
@@ -455,7 +455,7 @@ local function progressive_area_update(start_time)
 			processed_area_index = 1 -- try to reduce the queue as fast as possible
 		end
 	end
-	local area = naturalslopeslib.progressive_area_updates[processed_area_index]
+	local area = slopeslib.progressive_area_updates[processed_area_index]
 	local i = area.i
 	local y_size = area.maxp.y - area.minp.y + 1
 	local z_size = area.maxp.z - area.minp.z + 1
@@ -466,14 +466,14 @@ local function progressive_area_update(start_time)
 		local z = (i - 1) % (z_size)
 		local pos = {x = area.minp.x + x, y = area.minp.y + y, z = area.minp.z + z}
 		local node = minetest.get_node(pos)
-		naturalslopeslib.chance_update_shape(pos, node, area.factor, area.type)
+		slopeslib.chance_update_shape(pos, node, area.factor, area.type)
 		i = i + 1 + math.random(area.skip / 2, area.skip)
 		if (os.clock() - start_time) > 0.1 and i <= imax then
 			area.i = i
 			return false
 		end
 	end
-	table.remove(naturalslopeslib.progressive_area_updates, processed_area_index)
+	table.remove(slopeslib.progressive_area_updates, processed_area_index)
 	if os.clock() - start_time < 0.1 then
 		progressive_area_update(start_time)
 	end
@@ -491,11 +491,11 @@ end
 minetest.register_globalstep(generation_globalstep)
 
 minetest.register_on_shutdown(function()
-	if #naturalslopeslib.progressive_area_updates > 0 then
+	if #slopeslib.progressive_area_updates > 0 then
 		minetest.log("info", "Processing slope generation for queued areas")
-		for i, area in ipairs(naturalslopeslib.progressive_area_updates) do
-			minetest.log("info", (#naturalslopeslib.progressive_area_updates - i + 1) .. " remaining area(s)")
-			naturalslopeslib.area_chance_update_shape(area.minp, area.maxp, area.factor, area.skip, false, area.type)
+		for i, area in ipairs(slopeslib.progressive_area_updates) do
+			minetest.log("info", (#slopeslib.progressive_area_updates - i + 1) .. " remaining area(s)")
+			slopeslib.area_chance_update_shape(area.minp, area.maxp, area.factor, area.skip, false, area.type)
 		end
 	end
 end)
@@ -505,8 +505,8 @@ Triggers registration
 --]]
 
 -- Stomp function to get the replacement node name
-function naturalslopeslib.update_shape_on_walk(player, pos, node, desc, trigger_meta)
-	return naturalslopeslib.get_replacement_node(pos, node)
+function slopeslib.update_shape_on_walk(player, pos, node, desc, trigger_meta)
+	return slopeslib.get_replacement_node(pos, node)
 end
 
 -- Chat command
@@ -518,7 +518,7 @@ minetest.register_chatcommand('updshape', {
 		local pos = player:get_pos()
 		local node_pos = {['x'] = pos.x, ['y'] = pos.y - 1, ['z'] = pos.z}
 		local node = minetest.get_node(node_pos)
-		if naturalslopeslib.update_shape(node_pos, node) then
+		if slopeslib.update_shape(node_pos, node) then
 			return true, 'Shape updated.'
 		end
 		return false, node.name .. " cannot have it's shape updated."
@@ -527,17 +527,17 @@ minetest.register_chatcommand('updshape', {
 
 -- On generation big update
 local function register_on_generation()
-	if not naturalslopeslib._register_on_generated then
+	if not slopeslib._register_on_generated then
 		return
 	end
-	if naturalslopeslib.setting_enable_shape_on_generation() then
-		if naturalslopeslib.setting_generation_method() == "Progressive" then
+	if slopeslib.setting_enable_shape_on_generation() then
+		if slopeslib.setting_generation_method() == "Progressive" then
 			minetest.register_on_generated(function(minp, maxp, seed)
-				naturalslopeslib.register_progressive_area_update(minp, maxp, naturalslopeslib.setting_generation_factor(), naturalslopeslib.setting_generation_skip(), "mapgen")
+				slopeslib.register_progressive_area_update(minp, maxp, slopeslib.setting_generation_factor(), slopeslib.setting_generation_skip(), "mapgen")
 			end)
 		else
 			minetest.register_on_generated(function(minp, maxp, seed)
-				naturalslopeslib.area_chance_update_shape(minp, maxp, naturalslopeslib.setting_generation_factor(), naturalslopeslib.setting_generation_skip(), true, "mapgen")
+				slopeslib.area_chance_update_shape(minp, maxp, slopeslib.setting_generation_factor(), slopeslib.setting_generation_skip(), true, "mapgen")
 			end)
 		end
 	end
@@ -548,10 +548,10 @@ minetest.register_on_mods_loaded(register_on_generation)
 local function on_place_or_dig(pos, force_below)
 	local function update(pos, x, y, z, factor)
 		local new_pos = vector.add(pos, vector.new(x, y, z))
-		naturalslopeslib.chance_update_shape(new_pos, minetest.get_node(new_pos), factor, "place")
+		slopeslib.chance_update_shape(new_pos, minetest.get_node(new_pos), factor, "place")
 	end
 	-- Update 8 neighbors plus above and below
-	local place_factor = naturalslopeslib.setting_dig_place_factor()
+	local place_factor = slopeslib.setting_dig_place_factor()
 	update(pos, 0, 0, 0, place_factor)
 	update(pos, 1, 0, 0, place_factor)
 	update(pos, 0, 0, 1, place_factor)
@@ -567,7 +567,7 @@ local function on_place_or_dig(pos, force_below)
 	update(pos, 0, 1, 0, place_factor)
 end
 
-if naturalslopeslib.setting_enable_shape_on_dig_place() then
+if slopeslib.setting_enable_shape_on_dig_place() then
 	minetest.register_on_placenode(function(pos, new_node, placer, old_node, item_stack, pointed_thing)
 		on_place_or_dig(pos, true)
 	end)
