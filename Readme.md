@@ -25,7 +25,7 @@ The houses, buildings and roads are by Kenny [https://kenney.nl].
 The sounds have been sourced from Freesound [https://freesound.org].
 The icons are emojis from Twemoji [https://twemoji.twitter.com].
 
-The wind turbine is made by me using AssetForge [https://assetforge.io/].
+The wind turbine and powercraft were both authored by me using AssetForge [https://assetforge.io/].
 
 ## Features Wishlist / Roadmap / Ideas
 A list of features that would be nice to have, if you are
