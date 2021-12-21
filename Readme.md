@@ -9,6 +9,11 @@ You've been employed by a company with plenty of energy to
 sell but no customers to sell it to! It's your job
 to build a city for them so that they can make some cash!
 
+## Installation
+You will need to install [Minetest](http://minetest.net) and
+place this repo inside Minetest's game directory. Start up
+Minetest and select the Builda City coin from the main menu.
+
 ## Quick Start
 You can only build roads and buildings next to existing roads 
 so you will need to find a road in order to begin building your city. 
