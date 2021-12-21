@@ -10,14 +10,13 @@ sell but no customers to sell it to! It's your job
 to build a city for them so that they can make some cash!
 
 ## Quick Start
-You have a limited amount of energy, so it's important to find 
-some energy sources. Click on the energy sources to replenish your 
-energy. The next step is to builda city. You can only build roads 
-and buildings next to existing roads so you will need to find a road. 
-Buildings consume energy and eventually they run out and need to be 
-charged up, click on a building to charge it. You will collect 
-coins this way. Use these coins to fix broken energy sources 
-so that you can survive and expand your city!
+You can only build roads and buildings next to existing roads 
+so you will need to find a road in order to begin building your city. 
+Buildings cost coins and eventually you will run out. Don't worry
+you can collect more coins by delivering energy to the structures 
+you have built. You'll need to click on energy sources to charge your
+battery. You can also check on the status of your city at any time
+by pressing I / inventory, whilst within the city limits.
 
 ## Assets
 The assets for this game have been sourced from various CC0 sources.
@@ -25,7 +24,8 @@ The houses, buildings and roads are by Kenny [https://kenney.nl].
 The sounds have been sourced from Freesound [https://freesound.org].
 The icons are emojis from Twemoji [https://twemoji.twitter.com].
 
-The wind turbine and powercraft were both authored by me using AssetForge [https://assetforge.io/].
+The wind turbine and powercraft were both authored by me using 
+AssetForge [https://assetforge.io/].
 
 ## Features Wishlist / Roadmap / Ideas
 A list of features that would be nice to have, if you are
@@ -49,7 +49,6 @@ that would help to polish & improve Builda City.
 * Meshlike particles
 * Change the chat/log/debug position
 * Use the game name in the pause menu.
-* Allow games to incoperate custom menu.
 * Automatically load clientmods in the game directory 
   (for singleplayer) if provided.
 
