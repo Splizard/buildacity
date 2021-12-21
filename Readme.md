@@ -17,13 +17,14 @@ Now you can create a world and start playing!
 Hint: if you can't think of a good world name, try "Earth".
 
 ## Quick Start
+Press K to toggle flight mode.
 You can only build roads and buildings next to existing roads 
 so you will need to find a road in order to begin building your city. 
 Buildings cost coins and eventually you will run out. Don't worry
 you can collect more coins by delivering energy to the structures 
 you have built. You'll need to click on energy sources to charge your
 battery. You can also check on the status of your city at any time
-by pressing I / inventory, whilst within the city limits.
+by pressing I / inventory (whilst within the city limits).
 
 ## Assets
 The assets for this game have been sourced from various CC0 sources.
