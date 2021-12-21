@@ -123,6 +123,8 @@ function city.get_road_near(pos, facing_pos)
     if string.match(minetest.get_node(right).name, "city:road.*") then
         table.insert(relevant_roads, right)
     end
+
+    local result
    
     if facing_pos then
         local min_dist = math.huge
@@ -134,11 +136,20 @@ function city.get_road_near(pos, facing_pos)
                 min_road = road
             end
         end
-        return min_road
+        result = min_road
+    else
+         --pick one at random 
+        result = relevant_roads[math.random(#relevant_roads)]
     end
 
-    --pick one at random 
-    return relevant_roads[math.random(#relevant_roads)]
+    if result then
+        result.city = city.at(result)  --connect to existing city.
+        if not result.city then
+            result.city = city.new(result) --create a new city.
+        end
+    end
+   
+    return result
 end
 
 local register_road = function(name, mesh, tiles)

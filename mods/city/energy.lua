@@ -25,6 +25,19 @@ function city.enable(pos)
     return false
 end
 
+local off_suffix_len = #"_off"
+
+function city.power(pos) 
+    local node = minetest.get_node(pos)
+    if string.match(node.name, "city:.*_off") then
+        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-off_suffix_len), param2 = node.param2})
+        city.update_roads(pos)
+        city.add(city.at(pos), "power_consumption")
+        return true
+    end
+    return false
+end
+
 --[[
     Wind turbines are a bit awkward, they consist of two parts, the base and the
     blades (that spin). We need to make sure that the two nodes stay in sync.

@@ -1,7 +1,7 @@
 --Load the guide from the file.
 local guide = io.open(minetest.get_modpath("builda").."/guide.txt", "r"):read("a")
 
-minetest.register_on_joinplayer(function(player)    
+city.guide = function(player)
     local name = player:get_player_name()
     if name == "singleplayer" then
         name = "builda"
@@ -16,4 +16,6 @@ minetest.register_on_joinplayer(function(player)
         "image[4.5,0.2;4,8;builda_guide.png]"..
         "button_exit[1.3,6.2;1.5,0.8;close;OK]"
     )
-end)
+end
+
+minetest.register_on_joinplayer(city.guide)

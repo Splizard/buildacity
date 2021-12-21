@@ -17,7 +17,8 @@ function city.build(kind, pos, builder)
     if minetest.get_item_group(minetest.get_node({x=pos.x, y=pos.y-1, z=pos.z}).name, "ground") == 0 then
         return false
     end
-    if minetest.get_node(pos).name ~= "air" then
+    local current = minetest.get_node(pos)
+    if current.name ~= "air" and minetest.get_item_group(current.name, "replaceable") == 0 then
         return false
     end
 
@@ -33,10 +34,26 @@ function city.build(kind, pos, builder)
         end
     end
 
+    city.set(pos, road.city)
+
     if kind == "road" then
         minetest.set_node(pos, {name = "city:road_off"})
         city.update_roads(pos)
+        city.add(road.city, "roads")
         return true
+    end
+
+    if kind == "house" then
+        city.add(road.city, "houses")
+    end
+    if kind == "mall" then
+        city.add(road.city, "malls")
+    end
+    if kind == "shop" then
+        city.add(road.city, "shops")
+    end
+    if kind == "skyscraper" then
+        city.add(road.city, "skyscrapers")
     end
 
     local building = city.buildings[kind][math.random(1, #city.buildings[kind])] 
@@ -156,6 +173,22 @@ function city.register_building(name, def)
             local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
             minetest.set_node(vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x}), {name = "air"})
         end
+        if kind ~= "" then
+            local id = city.at(pos)
+            if kind == "house" then
+                city.add(id, "houses", -1)
+            end
+            if kind == "shop" then
+                city.add(id, "shops", -1)
+            end
+            if kind == "malls" then
+                city.add(id, "malls", -1)
+            end
+            if kind == "skyscraper" then
+                city.add(id, "skyscrapers", -1)
+            end
+            city.add(id, "power_consumption", -1)
+        end
     end
 
     minetest.register_node(name, node_def)
@@ -226,7 +259,7 @@ city.register_building("city:shop_b", {height = 0.75, mesh = "city_shop_b", kind
 city.register_building("city:shop_c", {height = 0.75, mesh = "city_shop_c", kind = "shop"})
 city.register_building("city:shop_d", {height = 0.75, mesh = "city_shop_d", kind = "shop"})
 city.register_building("city:shop_e", {height = 0.75, mesh = "city_shop_e", kind = "shop", width = 2})
-city.register_building("city:shop_f", {height = 0.75, mesh = "city_shop_e", kind = "shop"})
+city.register_building("city:shop_f", {height = 0.75, mesh = "city_shop_e", kind = "shop", width = 2})
 
 
 city.register_building("city:mall_a", {height = 1, mesh = "city_mall_a", kind = "mall", width = 2})
@@ -234,5 +267,4 @@ city.register_building("city:mall_b", {height = 1, mesh = "city_mall_b", kind = 
 city.register_building("city:mall_c", {height = 1, mesh = "city_mall_c", kind = "mall"})
 city.register_building("city:mall_d", {height = 1, mesh = "city_mall_d", kind = "mall"})
 city.register_building("city:mall_e", {height = 1, mesh = "city_mall_e", kind = "mall"})
-city.register_building("city:mall_f", {height = 1, mesh = "city_mall_f", kind = "mall"})
-city.register_building("city:mall_g", {height = 1, mesh = "city_mall_g", kind = "mall", width = 2})
+city.register_building("city:mall_f", {height = 1, mesh = "city_mall_f", kind = "mall", width = 2})

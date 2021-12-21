@@ -40,7 +40,6 @@ a modder, submit a PR!
 * Smoother Coastlines
 * Mesecon-style power?
 * Bridges, Tunnels and Hilly Roads
-* Population and City Names
 * Driving around the city in a car.
 * Walking around the city as a person?
 

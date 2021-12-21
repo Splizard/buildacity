@@ -32,11 +32,8 @@ local PlayerHasEnergy = function(player, energy)
     return player:get_meta():get_float("energy") >= energy
 end
 
-local off_suffix_len = #"_off"
-
-
 minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
-    if string.match(node.name, "city:.*_off") and PlayerHasEnergy(puncher, 1) then
+    if PlayerHasEnergy(puncher, 1) and city.power(pos) then
         local income = 1
         if string.match(node.name,"shop") then
             income = 2
@@ -52,7 +49,6 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
             height = 1
         end
         AddPlayerCoins(puncher, income)
-        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-off_suffix_len), param2 = node.param2})
         minetest.sound_play("builda_income", {pos = pos, max_hear_distance = 20})
         minetest.add_particle({
             pos={x=pos.x, y=pos.y-(2.9-height), z=pos.z},
@@ -97,6 +93,8 @@ end)
 
 minetest.hud_replace_builtin("health", nil)
 
+local last_inventory_update = 0
+
 minetest.register_globalstep(function(dt)
     for _, player in ipairs(minetest.get_connected_players()) do
         if player:get_hp() > 0 then
@@ -110,6 +108,50 @@ minetest.register_globalstep(function(dt)
                     speed = 1,
                 })
             end
+        end
+
+        last_inventory_update = last_inventory_update + dt
+        if last_inventory_update > 1 then
+            last_inventory_update = 0
+
+            local pos = player:get_pos()
+            if pos.y > 10 then
+                pos.y = 10
+            end
+
+            local id = city.at(pos)
+            if not id then
+                city.guide(player)
+                return
+            end
+
+            local roads = city.get_int(id, "roads")
+            local houses = city.get_int(id, "houses")
+            local shops = city.get_int(id, "shops")
+            local malls = city.get_int(id, "malls")
+            local skyscrapers = city.get_int(id, "skyscrapers")
+
+            --calculate unemployment.
+            local unemployment = 100-((skyscrapers*20 + malls*10 + shops*5)/houses)*100
+            if unemployment < 0 then
+                unemployment = 0
+            end
+
+            local jobs = (skyscrapers*20 + malls*10 + shops*5)-houses
+            if jobs < 0 then
+                jobs = 0
+            end
+
+            local stats = city.get_string(id, "name")..
+                "\n\nPopulation: "..houses..
+                "\nPower usage: "..city.get_int(id, "power_consumption")..
+                "\nUnemployment: "..string.format("%.0f%%", unemployment)
+            
+            player:set_inventory_formspec(
+                "size[8,7.2,false]"..
+                "hypertext[0.5,0;4.75,8.5;stats;"..stats.."]"..
+                "button_exit[1.3,6.2;1.5,0.8;close;OK]"
+            )
         end
     end
 end)
@@ -290,6 +332,19 @@ minetest.register_decoration({
     flags = "force_placement",
 })
 
+
+--Roads are starting points, where a player can start building from.
+minetest.register_decoration({
+    name = "builda:tree",
+    deco_type = "simple",
+    place_on = {"polymap:grass"},
+    fill_ratio = 0.05,
+    biomes = {"grassland"},
+    y_max = 31000,
+    y_min = 0,
+    decoration = "city:tree_a",
+})
+
 --Roads are starting points, where a player can start building from.
 minetest.register_decoration({
     name = "builda:road",
@@ -401,10 +456,10 @@ minetest.register_item("builda:destroyer", {
 
             local node = minetest.get_node(pos)
             if PlayerCanAfford(user, 1) and minetest.get_item_group(node.name, "consumer") > 0 then
+                city.destroy(pos)
                 AddPlayerEnergy(user, -5)
 
                 --'explode' the node.
-                minetest.set_node(pos, {name = "air"})
                 minetest.add_particlespawner({
                     amount = 10,
                     time = 0.2,
@@ -419,7 +474,6 @@ minetest.register_item("builda:destroyer", {
                     maxexptime = 0.2,
                 })
                 minetest.sound_play("builda_explode", {pos = pos, max_hear_distance = 20})
-                city.update_roads(pos)
             else
                 minetest.sound_play("builda_error", {pos = pointed_thing.below, max_hear_distance = 20})
             end
