@@ -279,7 +279,7 @@ minetest.register_on_mapgen_init(function()
     minetest.set_mapgen_setting("mgflat_spflags", "hills,lakes,nocaverns", true)
     minetest.set_mapgen_setting("water_level", "8", true)
 
-    local seed = math.random(0, 2^32-1)
+    local seed = math.random(0, 2^28-1)
     local existing = minetest.get_mapgen_setting_noiseparams("mgflat_np_terrain")
     if existing then
         seed = existing.seed

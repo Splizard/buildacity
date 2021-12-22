@@ -1,5 +1,5 @@
 --Load the guide from the file.
-local guide = io.open(minetest.get_modpath("builda").."/guide.txt", "r"):read("a")
+local guide = io.open(minetest.get_modpath("builda").."/guide.txt", "r"):read("*a")
 
 city.guide = function(player)
     local name = player:get_player_name()
