@@ -22,7 +22,7 @@ function city.build(kind, pos, builder)
         return false
     end
 
-    local road = city.get_road_near(pos, builder:get_pos())
+    local road = city.get_street_near(pos, builder:get_pos())
     if not road then
         return false
     end
@@ -37,8 +37,11 @@ function city.build(kind, pos, builder)
     city.set(pos, road.city)
 
     if kind == "road" then
-        minetest.set_node(pos, {name = "city:road_off"})
-        city.update_roads(pos)
+        minetest.set_node(pos, {name = "city:street_off"})
+        if road.new_city then
+            city.update_roads(road, true)
+        end
+        city.update_roads(pos, true)
         city.add(road.city, "roads")
         return true
     end

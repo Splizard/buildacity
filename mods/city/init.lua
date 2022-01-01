@@ -69,16 +69,12 @@ end
 
 local mapnlock
 
---city.get returns the ID of the city
---at pos, or nil, if there is no city.
+--city.get returns the ID of the city, the node at pos
+--must be a 'city' node.
 function city.at(pos)
-    local mapblock = {x=math.floor(pos.x/16), y=math.floor(pos.y/16), z=math.floor(pos.z/16)}
-    local blockpos = {x=mapblock.x*16, y=mapblock.y*16, z=mapblock.z*16}
-    local node = minetest.get_node(blockpos)
-    if node.name == "city:pointer" then
-        return node.param1*255 + node.param2
-    end 
-    return nil
+    local under = {x=pos.x, y=pos.y-1, z=pos.z}
+    local node = minetest.get_node(under)
+    return node.param1*255 + node.param2
 end
 
 function city.new(pos)
@@ -94,18 +90,22 @@ function city.new(pos)
     return id
 end
 
+--ID is stored underneath pos. A city node must be placed 
+--at pos.
 function city.set(pos, id) 
-    local mapblock = {x=math.floor(pos.x/16), y=math.floor(pos.y/16), z=math.floor(pos.z/16)}
-    local blockpos = {x=mapblock.x*16, y=mapblock.y*16, z=mapblock.z*16}
-    if minetest.get_node(pos).name ~= "city:pointer" then
-        minetest.set_node(blockpos, {name="city:pointer", param1=math.floor(id/255), param2=id%255})
-        city.changed = true
-    end
+    local under = {x=pos.x, y=pos.y-1, z=pos.z}
+    local node = minetest.get_node(under)
+    minetest.set_node(under, {name=node.name, param1=math.floor(id/255), param2=id%255})
 end
 
 function city.destroy(pos)
+    local node = minetest.get_node(pos)
+    if minetest.get_item_group(node.name, "road") > 0 then
+        return city.remove_road(pos)
+    end
     minetest.set_node(pos, {name = "air"})
     city.update_roads(pos)
+    return true
 end
 
 --City pointer associates a map block with a city ID (stored in the params).
