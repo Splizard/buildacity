@@ -119,39 +119,14 @@ minetest.register_globalstep(function(dt)
                 pos.y = 10
             end
 
-            local id = city.at(pos)
-            if not id then
+            if true then
                 city.guide(player)
                 return
             end
 
-            local roads = city.get_int(id, "roads")
-            local houses = city.get_int(id, "houses")
-            local shops = city.get_int(id, "shops")
-            local malls = city.get_int(id, "malls")
-            local skyscrapers = city.get_int(id, "skyscrapers")
+            --FIXME how to show city info?
 
-            --calculate unemployment.
-            local unemployment = 100-((skyscrapers*20 + malls*10 + shops*5)/houses)*100
-            if unemployment < 0 then
-                unemployment = 0
-            end
-
-            local jobs = (skyscrapers*20 + malls*10 + shops*5)-houses
-            if jobs < 0 then
-                jobs = 0
-            end
-
-            local stats = city.get_string(id, "name")..
-                "\n\nPopulation: "..houses..
-                "\nPower usage: "..city.get_int(id, "power_consumption")..
-                "\nUnemployment: "..string.format("%.0f%%", unemployment)
             
-            player:set_inventory_formspec(
-                "size[8,7.2,false]"..
-                "hypertext[0.5,0;4.75,8.5;stats;"..stats.."]"..
-                "button_exit[1.3,6.2;1.5,0.8;close;OK]"
-            )
         end
     end
 end)
@@ -166,16 +141,16 @@ minetest.is_protected = function(pos, name)
     local left = minetest.get_node({x=pos.x-1, y=pos.y, z=pos.z})
     local right = minetest.get_node({x=pos.x+1, y=pos.y, z=pos.z})
 
-    if string.match(top.name, "city:road.*") then 
+    if string.match(top.name, "city:street.*") then 
         return false
     end
-    if string.match(bot.name, "city:road.*") then 
+    if string.match(bot.name, "city:street.*") then 
         return false
     end
-    if string.match(left.name, "city:road.*") then 
+    if string.match(left.name, "city:street.*") then 
         return false
     end
-    if string.match(right.name, "city:road.*") then 
+    if string.match(right.name, "city:street.*") then 
         return false
     end
 
@@ -197,6 +172,7 @@ minetest.register_on_joinplayer(function(player)
     end
 
     local list = {
+        "builda:info 1",
         "builda:road 1",
         "builda:house 1",
         "builda:shop 1",
@@ -357,7 +333,54 @@ minetest.register_decoration({
     decoration = "city:road",
 })
 
---Spanner is used to fix broken power sources.
+minetest.register_item("builda:info", {
+    description = S("Info"),
+    inventory_image = "builda_info.png",
+    type = "tool",
+    on_place = function(itemstack, user, pointed_thing)
+        if not pointed_thing.under then
+            minetest.show_formspec(user:get_player_name(), "builda:guide", city.guide(user))
+            return
+        end
+
+        local pos = pointed_thing.under
+        local node = minetest.get_node_or_nil(pos)
+        if string.match(node.name,"city") then
+            local id = city.at(pos)
+
+            local roads = city.get_int(id, "roads")
+            local houses = city.get_int(id, "houses")
+            local shops = city.get_int(id, "shops")
+            local malls = city.get_int(id, "malls")
+            local skyscrapers = city.get_int(id, "skyscrapers")
+
+            --calculate unemployment.
+            local unemployment = 100-((skyscrapers*20 + malls*10 + shops*5)/houses)*100
+            if unemployment < 0 then
+                unemployment = 0
+            end
+
+            local jobs = (skyscrapers*20 + malls*10 + shops*5)-houses
+            if jobs < 0 then
+                jobs = 0
+            end
+
+            local stats = city.get_string(id, "name")..
+                "\n\nPopulation: "..houses..
+                "\nPower usage: "..city.get_int(id, "power_consumption")..
+                "\nUnemployment: "..string.format("%.0f%%", unemployment)
+            
+            minetest.show_formspec(user:get_player_name(), "builda:city_stats",
+                "size[8,7.2,false]"..
+                "hypertext[0.5,0;4.75,8.5;stats;"..stats.."]"..
+                "button_exit[1.3,6.2;1.5,0.8;close;OK]"
+            )
+        else
+            minetest.show_formspec(user:get_player_name(), "builda:guide", city.guide(user))
+        end
+    end
+})
+
 minetest.register_item("builda:road", {
     description = S("Road"),
     inventory_image = "builda_road.png",
@@ -455,8 +478,7 @@ minetest.register_item("builda:destroyer", {
             end
 
             local node = minetest.get_node(pos)
-            if PlayerCanAfford(user, 1) and minetest.get_item_group(node.name, "consumer") > 0 then
-                city.destroy(pos)
+            if PlayerCanAfford(user, 1) and minetest.get_item_group(node.name, "consumer") > 0 and city.destroy(pos) then
                 AddPlayerEnergy(user, -5)
 
                 --'explode' the node.

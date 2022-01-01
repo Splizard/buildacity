@@ -10,12 +10,10 @@ city.guide = function(player)
     --replace [name] with the player's name
     guide = guide:gsub("%[name%]", name)
 
-    player:set_inventory_formspec(
-        "size[8,7.2,false]"..
+    return "size[8,7.2,false]"..
         "hypertext[0.5,0;4.75,8.5;guide;"..guide.."]"..
         "image[4.5,0.2;4,8;builda_guide.png]"..
         "button_exit[1.3,6.2;1.5,0.8;close;OK]"
-    )
 end
 
 minetest.register_on_joinplayer(city.guide)
