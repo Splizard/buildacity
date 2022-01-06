@@ -22,41 +22,9 @@ function city.build(kind, pos, builder)
         return false
     end
 
-    local road = city.get_street_near(pos, builder:get_pos())
+    local road = logistics.node_near(pos, builder, "street")
     if not road then
         return false
-    end
-
-    if builder then
-        if minetest.is_protected(pos, builder:get_player_name()) then
-            minetest.record_protection_violation(pos, builder:get_player_name())
-            return false
-        end
-    end
-
-    city.set(pos, road.city)
-
-    if kind == "road" then
-        minetest.set_node(pos, {name = "city:street_off"})
-        if road.new_city then
-            city.update_roads(road, true)
-        end
-        city.update_roads(pos, true)
-        city.add(road.city, "roads")
-        return true
-    end
-
-    if kind == "house" then
-        city.add(road.city, "houses")
-    end
-    if kind == "mall" then
-        city.add(road.city, "malls")
-    end
-    if kind == "shop" then
-        city.add(road.city, "shops")
-    end
-    if kind == "skyscraper" then
-        city.add(road.city, "skyscrapers")
     end
 
     local building = city.buildings[kind][math.random(1, #city.buildings[kind])] 
@@ -89,8 +57,7 @@ function city.build(kind, pos, builder)
         end
     end
 
-    minetest.set_node(pos, {name = building.."_off", param2 = param2})
-    return true
+    return logistics.place(building.."_off", pos, builder)
 end
 
 --[[
@@ -122,7 +89,16 @@ function city.register_building(name, def)
         mesh = def.mesh..".obj",
         drawtype = "mesh",
         paramtype = "light",
-        paramtype2 = "facedir",
+        paramtype2 = "colorfacedir",
+        logistics = {
+            network = "city",
+        },
+        connects_to = "group:street",
+        resources = function(pos)
+            return {
+                population = 1,
+            }
+        end,
         groups = {
             flammable = 1,
             width = def.width,

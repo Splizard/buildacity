@@ -5,6 +5,32 @@ city = {
 }
 
 local storage = minetest.get_mod_storage()
+local db = storage
+
+--[[
+    city {
+        name = "New York",
+        founder = "singleplayer",
+        quests = {},
+    }
+]]
+logistics.register_network("city", {
+    on_create = function(pos, player)
+        local index = logistics.index(pos)
+
+        local name = city.names[math.random(1, #city.names-1)]
+        db:set_string("city/"..index.."/name", name)
+
+        print(name)
+
+        local founder = player:get_player_name()
+        db:set_string("city/"..index.."/founder", founder)
+    end,
+
+    on_update = function(pos, player)
+
+    end,
+})
 
 function city.load_material(mod, mtl)
     local models_path = minetest.get_modpath(mod) .. "/models/"
@@ -41,61 +67,22 @@ end
 
 function city.get_string(id, key) 
     city.changed = true
-    return storage:get_string("city_"..tostring(id).."_"..key)
+    return storage:get_string("city/"..tostring(id).."/"..key)
 end
 
 function city.set_string(id, key, val)
     city.changed = true
-    return storage:set_string("city_"..tostring(id).."_"..key, val)
+    return storage:set_string("city/"..tostring(id).."/"..key, val)
 end
 
 function city.get_int(id, key) 
     city.changed = true
-    return storage:get_int("city_"..tostring(id).."_"..key)
+    return storage:get_int("city/"..tostring(id).."/"..key)
 end
 
 function city.set_int(id, key, val)
     city.changed = true
-    return storage:set_int("city_"..tostring(id).."_"..key, val)
-end
-
-function city.add(id, key, amount) 
-    if not amount then
-        amount = 1
-    end
-    city.changed = true
-    return city.set_int(id, key, city.get_int(id, key) + amount)
-end
-
-local mapnlock
-
---city.get returns the ID of the city, the node at pos
---must be a 'city' node.
-function city.at(pos)
-    local under = {x=pos.x, y=pos.y-1, z=pos.z}
-    local node = minetest.get_node(under)
-    return node.param1*255 + node.param2
-end
-
-function city.new(pos)
-    local mapblock = {x=math.floor(pos.x/16), y=math.floor(pos.y/16), z=math.floor(pos.z/16)}
-    local blockpos = {x=mapblock.x*16, y=mapblock.y*16, z=mapblock.z*16}
-    local id = storage:get_int("cities")
-    id = id + 1
-    minetest.set_node(blockpos, {name="city:pointer", param1=math.floor(id/255), param2=id%255})
-    storage:set_int("cities", id)
-    local name = city.names[math.random(1, #city.names-1)]
-    city.set_string(id, "name", name)
-    city.changed = true
-    return id
-end
-
---ID is stored underneath pos. A city node must be placed 
---at pos.
-function city.set(pos, id) 
-    local under = {x=pos.x, y=pos.y-1, z=pos.z}
-    local node = minetest.get_node(under)
-    minetest.set_node(under, {name=node.name, param1=math.floor(id/255), param2=id%255})
+    return storage:set_int("city/"..tostring(id).."/"..key, val)
 end
 
 function city.destroy(pos)
@@ -108,15 +95,6 @@ function city.destroy(pos)
     return true
 end
 
---City pointer associates a map block with a city ID (stored in the params).
-minetest.register_node ("city:pointer", {
-    description = S("City Pointer"),
-    drawtype = "airlike",
-    paramtype = "none",
-    paramtype2 = "none",
-    sunlight_propagates = true,
-})
-
 local modpath = minetest.get_modpath("city")
 
 dofile(modpath.."/roads.lua")
@@ -124,3 +102,4 @@ dofile(modpath.."/energy.lua")
 dofile(modpath.."/buildings.lua")
 dofile(modpath.."/nature.lua")
 dofile(modpath.."/names.lua")
+dofile(modpath.."/industry.lua")

@@ -133,6 +133,7 @@ end)
 
 minetest.item_drop = function() end
 
+local old_is_protected = minetest.is_protected
 minetest.is_protected = function(pos, name)
 
     --Nodes can only be placed next to existing roads.
@@ -142,16 +143,16 @@ minetest.is_protected = function(pos, name)
     local right = minetest.get_node({x=pos.x+1, y=pos.y, z=pos.z})
 
     if string.match(top.name, "city:street.*") then 
-        return false
+        return old_is_protected(pos, name)
     end
     if string.match(bot.name, "city:street.*") then 
-        return false
+        return old_is_protected(pos, name)
     end
     if string.match(left.name, "city:street.*") then 
-        return false
+        return old_is_protected(pos, name)
     end
     if string.match(right.name, "city:street.*") then 
-        return false
+        return old_is_protected(pos, name)
     end
 
     return true
@@ -178,6 +179,7 @@ minetest.register_on_joinplayer(function(player)
         "builda:shop 1",
         "builda:mall 1",
         "builda:skyscraper 1",
+        "builda:mine 1",
         "builda:destroyer 1", 
     }
 
@@ -330,8 +332,10 @@ minetest.register_decoration({
     biomes = {"grassland"},
     y_max = 8,
     y_min = 0,
-    decoration = "city:road",
+    decoration = "city:street",
 })
+
+
 
 minetest.register_item("builda:info", {
     description = S("Info"),
@@ -346,30 +350,24 @@ minetest.register_item("builda:info", {
         local pos = pointed_thing.under
         local node = minetest.get_node_or_nil(pos)
         if string.match(node.name,"city") then
-            local id = city.at(pos)
+            local index = logistics.index(pos)
+            local resources = logistics.at(pos)
 
-            local roads = city.get_int(id, "roads")
-            local houses = city.get_int(id, "houses")
-            local shops = city.get_int(id, "shops")
-            local malls = city.get_int(id, "malls")
-            local skyscrapers = city.get_int(id, "skyscrapers")
-
-            --calculate unemployment.
-            local unemployment = 100-((skyscrapers*20 + malls*10 + shops*5)/houses)*100
-            if unemployment < 0 then
-                unemployment = 0
+            if index == 0 then
+                minetest.show_formspec(user:get_player_name(), "builda:guide", city.guide(user))
+                return
             end
 
-            local jobs = (skyscrapers*20 + malls*10 + shops*5)-houses
-            if jobs < 0 then
-                jobs = 0
+            local founder = city.get_string(index, "founder")
+            if founder == user:get_player_name() then
+                founder = "you"
             end
 
-            local stats = city.get_string(id, "name")..
-                "\n\nPopulation: "..houses..
-                "\nPower usage: "..city.get_int(id, "power_consumption")..
-                "\nUnemployment: "..string.format("%.0f%%", unemployment)
-            
+            local population = resources.population or 0
+
+            local stats = city.get_string(index, "name").."\n("..founder.." founded this city)"..
+                "\n\nPopulation: "..population
+
             minetest.show_formspec(user:get_player_name(), "builda:city_stats",
                 "size[8,7.2,false]"..
                 "hypertext[0.5,0;4.75,8.5;stats;"..stats.."]"..
@@ -381,6 +379,19 @@ minetest.register_item("builda:info", {
     end
 })
 
+minetest.register_item("builda:mine", {
+    description = S("Mine"),
+    inventory_image = "builda_mine.png",
+    type = "tool",
+    on_place = function(itemstack, user, pointed_thing)
+        if pointed_thing.type == "node" then
+            if pointed_thing.type == "node" then
+                minetest.set_node(pointed_thing.above, {name="city:coal_mine"})
+            end
+        end
+    end
+})
+
 minetest.register_item("builda:road", {
     description = S("Road"),
     inventory_image = "builda_road.png",
@@ -388,7 +399,7 @@ minetest.register_item("builda:road", {
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
             if pointed_thing.type == "node" then
-                if PlayerCanAfford(user, 1) and city.build("road", pointed_thing.above, user) then
+                if PlayerCanAfford(user, 1) and logistics.place("city:street", pointed_thing.above, user) then
                     AddPlayerCoins(user, -1)
                     minetest.sound_play("builda_pay", {pos = pointed_thing.above, max_hear_distance = 20})
                 end
@@ -478,7 +489,7 @@ minetest.register_item("builda:destroyer", {
             end
 
             local node = minetest.get_node(pos)
-            if PlayerCanAfford(user, 1) and minetest.get_item_group(node.name, "consumer") > 0 and city.destroy(pos) then
+            if PlayerCanAfford(user, 1) and minetest.get_item_group(node.name, "consumer") > 0 and logistics.remove(pos) then
                 AddPlayerEnergy(user, -5)
 
                 --'explode' the node.
