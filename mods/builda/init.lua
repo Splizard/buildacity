@@ -59,7 +59,7 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
             playername = puncher:get_player_name(),
         })
         AddPlayerEnergy(puncher, -1)
-        city.update_roads(pos)
+        logistics.update(pos)
     end
     local energy = minetest.get_item_group(node.name, "energy_source")
     if energy > 0 then
@@ -132,31 +132,6 @@ minetest.register_globalstep(function(dt)
 end)
 
 minetest.item_drop = function() end
-
-local old_is_protected = minetest.is_protected
-minetest.is_protected = function(pos, name)
-
-    --Nodes can only be placed next to existing roads.
-    local top = minetest.get_node({x=pos.x, y=pos.y, z=pos.z+1})
-    local bot = minetest.get_node({x=pos.x, y=pos.y, z=pos.z-1})
-    local left = minetest.get_node({x=pos.x-1, y=pos.y, z=pos.z})
-    local right = minetest.get_node({x=pos.x+1, y=pos.y, z=pos.z})
-
-    if string.match(top.name, "city:street.*") then 
-        return old_is_protected(pos, name)
-    end
-    if string.match(bot.name, "city:street.*") then 
-        return old_is_protected(pos, name)
-    end
-    if string.match(left.name, "city:street.*") then 
-        return old_is_protected(pos, name)
-    end
-    if string.match(right.name, "city:street.*") then 
-        return old_is_protected(pos, name)
-    end
-
-    return true
-end
 
 minetest.register_item(":", {
     type = "none",
@@ -250,34 +225,6 @@ minetest.register_on_joinplayer(function(player)
     
 end)
 
---micromap.
-minetest.register_on_mapgen_init(function()
-    minetest.set_mapgen_setting("mg_name", "flat", true)
-    minetest.set_mapgen_setting("mg_flags", "noores,nocaves,nodungeons,light,decorations,biomes", true)
-    minetest.set_mapgen_setting("mgflat_spflags", "hills,lakes,nocaverns", true)
-    minetest.set_mapgen_setting("water_level", "8", true)
-
-    local seed = math.random(0, 2^28-1)
-    local existing = minetest.get_mapgen_setting_noiseparams("mgflat_np_terrain")
-    if existing then
-        seed = existing.seed
-    end
-
-    minetest.set_mapgen_setting_noiseparams("mgflat_np_terrain", {
-        flags = "defaults",
-        lacunarity = 2,
-        persistence = 0.6,
-        seed = seed,
-        spread = {x=120,y=120,z=120},
-        scale = 1,
-        octaves = 5,
-        offset = 0,
-    }, true)
-
-    minetest.set_mapgen_setting("mgflat_hill_threshold", "0.3", true)
-    minetest.set_mapgen_setting("mgflat_hill_steepness", "10", true)
-    minetest.set_mapgen_setting("mgflat_lake_threshold", "0", true)
-end)
 
 --Wind turbines provided by BigPowerCorp.
 --They only spawn on hills (we assume flat mapgen from polymap).
