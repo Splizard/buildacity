@@ -1,5 +1,19 @@
 local S = minetest.get_translator("city")
 
+local update_road_lighting = function(pos)
+    local top = minetest.get_node({x=pos.x, y=pos.y, z=pos.z+1})
+    local bot = minetest.get_node({x=pos.x, y=pos.y, z=pos.z-1})
+    local left = minetest.get_node({x=pos.x-1, y=pos.y, z=pos.z})
+    local right = minetest.get_node({x=pos.x+1, y=pos.y, z=pos.z})
+
+    top.lit = string.match(top.name, "_lit")
+    bot.lit = string.match(bot.name, "_lit")
+    left.lit = string.match(left.name, "_lit")
+    right.lit = string.match(right.name, "_lit")
+
+    return not (top.lit or bot.lit or left.lit or right.lit)
+end
+
 --city.disable disables the energy_source at position 'pos' and
 --returns true. if the node at this pos is not an energy_source,
 --this function has no effect and returns false.
@@ -30,9 +44,17 @@ local off_suffix_len = #"_off"
 function city.power(pos) 
     local node = minetest.get_node(pos)
     if string.match(node.name, "city:.*_off") then
-        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-off_suffix_len), param2 = node.param2})
+
+        -- add streetlights if the node is a street.
+        local suffix = ""
+        if minetest.get_item_group(node.name, "street") > 0 and update_road_lighting(pos) then
+            suffix = "_lit"
+        end
+
+        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-off_suffix_len)..suffix, param2 = node.param2})
         logistics.update(pos)
         --city.add(city.at(pos), "power_consumption")
+
         return true
     end
     return false

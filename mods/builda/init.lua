@@ -345,8 +345,7 @@ minetest.register_item("builda:road", {
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
             if pointed_thing.type == "node" then
-                print( PlayerCanAfford(user, 1))
-                if PlayerCanAfford(user, 1) and logistics.place("city:street", pointed_thing.above, user) then
+                if PlayerCanAfford(user, 1) and logistics.place("city:street_off", pointed_thing.above, user) then
                     AddPlayerCoins(user, -1)
                     minetest.sound_play("builda_pay", {pos = pointed_thing.above, max_hear_distance = 20})
                 end

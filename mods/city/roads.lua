@@ -30,15 +30,6 @@
 
 local S = minetest.get_translator("city")
 
-local update_road_lighting = function(top, bot, left, right)
-    top.lit = string.match(top.name, "_lit")
-    bot.lit = string.match(bot.name, "_lit")
-    left.lit = string.match(left.name, "_lit")
-    right.lit = string.match(right.name, "_lit")
-
-    return not (top.lit or bot.lit or left.lit or right.lit)
-end
-
 local register_street = function(name, mesh)
     local def = {
         description = S("Street"),
