@@ -29,7 +29,7 @@ function city.build(kind, pos, builder)
 
     local building = city.buildings[kind][math.random(1, #city.buildings[kind])] 
     local dir = vector.subtract(pos, road)
-    local param2 = minetest.dir_to_facedir(dir)
+    --local param2 = minetest.dir_to_facedir(dir)
 
     --If the building has a width greater than one, we need to check
     --that the nodes to the right (taking into account param2) 
@@ -38,9 +38,10 @@ function city.build(kind, pos, builder)
     local width = minetest.get_item_group(building, "width")
     while width and width > 1 do
         local left = vector.add(pos, {x=-dir.z, y=dir.y, z=dir.x})
-        local node_right = minetest.get_node(vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x}))
+        local right = vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x})
+        local node_right = minetest.get_node(right)
         local node_left = minetest.get_node(left)
-        local node_under_right = minetest.get_node(vector.subtract(pos, {x=-dir.z, y=dir.y-1, z=dir.x}))
+        local node_under_right = minetest.get_node(vector.subtract(right, {x=0, y=1, z=0}))
         local node_under_left = minetest.get_node(vector.subtract(left, {x=0, y=1, z=0}))
 
         if node_right.name ~= "air" or minetest.get_item_group(node_under_right.name, "ground") == 0 then
@@ -48,7 +49,7 @@ function city.build(kind, pos, builder)
                 pos = left --move left
                 break
             else
-                --change the building to a random width 1 building.
+                -- decrease the width of the building that we can place.
                 building = city.buildings_by_width[kind][width-1][math.random(1, #city.buildings_by_width[kind][width-1])]
                 width = minetest.get_item_group(building, "width")
             end
@@ -134,17 +135,30 @@ function city.register_building(name, def)
     end
 
     local suffix = "_off"
-    if not def.self_sufficient then
-        node_def.groups["consumer"] = 1
-    end
+    node_def.groups["consumer"] = 1
 
-    --setup a node timer that will decay the building
-    --after a random amount of time.
-    node_def.on_construct = function(pos, placer, itemstack, pointed_thing)
+    node_def.on_construct = function(pos)
         if width > 1 then
             local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
             minetest.set_node(vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x}), {name = "city:space"})
         end
+        if kind ~= "" then
+            local id = city.at(pos)
+            if kind == "house" then
+                city.add_int(id, "houses", 1)
+            end
+            if kind == "shop" then
+                city.add_int(id, "shops", 1)
+            end
+            if kind == "malls" then
+                city.add_int(id, "malls", 1)
+            end
+            if kind == "skyscraper" then
+                city.add_int(id, "skyscrapers", 1)
+            end
+            city.add_int(id, "power_consumption", 1)
+        end
+
     end
 
     node_def.on_destruct = function(pos)
@@ -155,18 +169,18 @@ function city.register_building(name, def)
         if kind ~= "" then
             local id = city.at(pos)
             if kind == "house" then
-                city.add(id, "houses", -1)
+                city.add_int(id, "houses", -1)
             end
             if kind == "shop" then
-                city.add(id, "shops", -1)
+                city.add_int(id, "shops", -1)
             end
             if kind == "malls" then
-                city.add(id, "malls", -1)
+                city.add_int(id, "malls", -1)
             end
             if kind == "skyscraper" then
-                city.add(id, "skyscrapers", -1)
+                city.add_int(id, "skyscrapers", -1)
             end
-            city.add(id, "power_consumption", -1)
+            city.add_int(id, "power_consumption", -1)
         end
     end
 

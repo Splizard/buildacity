@@ -59,7 +59,6 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
             playername = puncher:get_player_name(),
         })
         AddPlayerEnergy(puncher, -1)
-        logistics.update(pos)
     end
     local energy = minetest.get_item_group(node.name, "energy_source")
     if energy > 0 then
@@ -435,7 +434,7 @@ minetest.register_item("builda:destroyer", {
             end
 
             local node = minetest.get_node(pos)
-            if PlayerCanAfford(user, 1) and minetest.get_item_group(node.name, "consumer") > 0 and logistics.remove(pos) then
+            if PlayerHasEnergy(user, 5) and minetest.get_item_group(node.name, "consumer") > 0 and logistics.remove(pos) then
                 AddPlayerEnergy(user, -5)
 
                 --'explode' the node.

@@ -21,8 +21,6 @@ logistics.register_network("city", {
         local name = city.names[math.random(1, #city.names-1)]
         db:set_string("city/"..index.."/name", name)
 
-        print(name)
-
         local founder = player:get_player_name()
         db:set_string("city/"..index.."/founder", founder)
     end,
@@ -31,6 +29,10 @@ logistics.register_network("city", {
 
     end,
 })
+
+function city.at(pos) 
+    return logistics.index(pos)
+end
 
 function city.load_material(mod, mtl)
     local models_path = minetest.get_modpath(mod) .. "/models/"
@@ -85,14 +87,9 @@ function city.set_int(id, key, val)
     return storage:set_int("city/"..tostring(id).."/"..key, val)
 end
 
-function city.destroy(pos)
-    local node = minetest.get_node(pos)
-    if minetest.get_item_group(node.name, "road") > 0 then
-        return city.remove_road(pos)
-    end
-    minetest.set_node(pos, {name = "air"})
-    city.update_roads(pos)
-    return true
+function city.add_int(id, key, val)
+    city.changed = true
+    city.set_int(id, key, city.get_int(id, key) + val)
 end
 
 local modpath = minetest.get_modpath("city")

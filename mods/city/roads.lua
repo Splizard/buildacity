@@ -103,4 +103,5 @@ register_street("city:street_junction", "city_road_junction")
 register_street("city:street_crossing", "city_road_crossing")
 
 logistics.register_rail("city:street", "city:street_corner", "city:street_junction", "city:street_crossing")
+logistics.register_rail("city:street_lit", "city:street_corner_lit", "city:street_junction_lit", "city:street_crossing_lit")
 logistics.register_rail("city:street_off", "city:street_corner_off", "city:street_junction_off", "city:street_crossing_off")

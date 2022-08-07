@@ -52,7 +52,6 @@ function city.power(pos)
         end
 
         minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-off_suffix_len)..suffix, param2 = node.param2})
-        logistics.update(pos)
         --city.add(city.at(pos), "power_consumption")
 
         return true

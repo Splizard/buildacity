@@ -62,6 +62,7 @@ function minetest.is_protected(pos, name)
     if node then
         if logistics.registered_rails[node.name] then
             local group = string.match(minetest.registered_nodes[node.name].connects_to, "group:(.*)")
+
             local neighbours = math.floor(node.param2 / 32)
 
             local dir = function(v)
@@ -125,7 +126,6 @@ local update = function(pos, init)
         return
     end
     local group = string.match(minetest.registered_nodes[center.name].connects_to, "group:(.*)")
-
     local dir = function(v)
         local node = minetest.get_node(vector.add(pos, v))
         return minetest.get_item_group(node.name, group) > 0

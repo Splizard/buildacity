@@ -221,8 +221,53 @@ end
 -- if the node at 'pos' hasn't been added.
 -- player is the player who is removing the logistics node.
 logistics.remove = function(pos, player) 
-    minetest.set_node(pos, {name = "air"})
+    local node = minetest.get_node(pos)
+    local def = minetest.registered_nodes[node.name]
+    if def then
+        
+        local group = string.match(def.connects_to, "group:(.*)")
+        local network = def.logistics.network
+
+        local adjacent = logistics.node_near(pos, player, group)
+        if not adjacent then
+            return false
+        end
+
+        -- either fetch the index, or create a new one.
+        local index = logistics.index(adjacent)
+        if index == 0 then
+            local count = db:get_int(network.."_count")
+            count = count + 1
+            index = count
+            db:set_int(network.."_count", count)
+            logistics_set_index(adjacent, index)
+
+            local def = logistics.registered_networks[network]
+            if def.on_create then
+                def.on_create(adjacent, player)
+            end
+        end
+
+        -- accumulate/add resources.
+        if def.resources then
+            local resources = def.resources()
+            for resource, amount in pairs(resources) do
+                local total = db:get_int(network.."/"..index.."/"..resource)
+                if total == 0 then
+                    local keys = db:get_string(network.."/"..index.."_keys")
+                    keys = keys..","..resource
+                    db:set_string(network.."/"..index.."_keys", keys)
+                end
+                total = total - amount
+                db:set_int(network.."/"..index.."/"..resource, total)
+            end
+        end
+    end
+
+    minetest.remove_node(pos)
     logistics.update(pos)
+
+    
     return true
 end
 
