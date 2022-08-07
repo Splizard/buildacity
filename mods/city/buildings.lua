@@ -123,7 +123,20 @@ function city.register_building(name, def)
             {-0.5, -0.5, -0.5, -0.5+1*width, -0.5+1*def.height, 0.5},
         },
     }
+  
+    node_def.on_construct = function(pos)
+        if width > 1 then
+            local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
+            minetest.set_node(vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x}), {name = "city:space"})
+        end
+    end
 
+    node_def.on_destruct = function(pos)
+        if width > 1 then
+            local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
+            minetest.set_node(vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x}), {name = "air"})
+        end
+    end
 
     local decayed_node_def = table.copy(node_def)
 
@@ -136,53 +149,6 @@ function city.register_building(name, def)
 
     local suffix = "_off"
     node_def.groups["consumer"] = 1
-
-    node_def.on_construct = function(pos)
-        if width > 1 then
-            local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
-            minetest.set_node(vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x}), {name = "city:space"})
-        end
-        if kind ~= "" then
-            local id = city.at(pos)
-            if kind == "house" then
-                city.add_int(id, "houses", 1)
-            end
-            if kind == "shop" then
-                city.add_int(id, "shops", 1)
-            end
-            if kind == "malls" then
-                city.add_int(id, "malls", 1)
-            end
-            if kind == "skyscraper" then
-                city.add_int(id, "skyscrapers", 1)
-            end
-            city.add_int(id, "power_consumption", 1)
-        end
-
-    end
-
-    node_def.on_destruct = function(pos)
-        if width > 1 then
-            local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
-            minetest.set_node(vector.subtract(pos, {x=-dir.z, y=dir.y, z=dir.x}), {name = "air"})
-        end
-        if kind ~= "" then
-            local id = city.at(pos)
-            if kind == "house" then
-                city.add_int(id, "houses", -1)
-            end
-            if kind == "shop" then
-                city.add_int(id, "shops", -1)
-            end
-            if kind == "malls" then
-                city.add_int(id, "malls", -1)
-            end
-            if kind == "skyscraper" then
-                city.add_int(id, "skyscrapers", -1)
-            end
-            city.add_int(id, "power_consumption", -1)
-        end
-    end
 
     minetest.register_node(name, node_def)
     minetest.register_node(name..suffix, decayed_node_def)
