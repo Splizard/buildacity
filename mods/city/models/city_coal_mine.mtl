@@ -1,0 +1,23 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl pavement(Clone)
+Kd 0 0 0
+
+newmtl stone(Clone)
+Kd 0.241 0.234 0.226
+
+newmtl bricks(Clone)
+Kd 0.931 0.659 0.343
+
+newmtl asphalt(Clone)
+Kd 0.302 0.307 0.324
+
+newmtl asphaltEdge(Clone)
+Kd 0.117 0.117 0.117
+
+newmtl woodBark(Clone)
+Kd 0.303 0.207 0.073
+
+newmtl _defaultMat(Clone)
+Kd 0.764 0.764 0.764
+

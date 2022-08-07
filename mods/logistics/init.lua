@@ -209,6 +209,8 @@ logistics.place = function(name, pos, player)
     if logistics.registered_rails[name] then
         logistics.update(pos, true)
     end
+
+    return true
 end
 
 -- logistics.remove removes the (logistics) node at 'pos'. If

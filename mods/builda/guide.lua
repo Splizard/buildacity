@@ -8,7 +8,7 @@ city.guide = function(player)
     end
 
     --replace [name] with the player's name
-    guide = guide:gsub("%[name%]", name)
+    local guide = guide:gsub("%[name%]", name)
 
     return "size[8,7.2,false]"..
         "hypertext[0.5,0;4.75,8.5;guide;"..guide.."]"..

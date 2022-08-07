@@ -1,0 +1,77 @@
+Disasters:
+* Fires
+* Tornados
+* Garbage Dumps (landfill)
+* Tsunamis
+* Lightning Strikes
+* Deathwaves (graveyard)
+* Terrorism
+* Sewage Bursts
+* Disease
+
+Special Buildings:
+* Fire station (reduces the risk of Fires)
+* Hospital (reduces the risk of Disease)
+* Recycling center (reduces the risk of Garbage Dumps)
+* Police Station (reduces the risk of Terrorism)
+* Crematorium (reduces the risk of Deathwaves)
+* Water treatment plant (reduces the risk of Sewage Bursts)
+* Sky Tower (reduces risk of Lightning Strikes)
+* School (increases education)
+* Train Station (connects road and rail)
+* Airport (enables 'teleportation' between cities)
+* Port (connects road and buoy)
+* Cell-phone tower (provides internet to nearby houses)
+
+Lesiure Buildings:
+* Swimming Pool
+* Tennis Court
+* Basketball Court
+* Sports Field
+* Stadium
+* Zoo
+* Park
+* Playground
+* Marina
+* Skatepark
+
+Conections:
+* Pipeline
+* Rail
+* Buoys
+
+Industry:
+* Factory
+* Farm
+* Mine
+* Sawmill
+* Refinery
+* Water tower.
+* Pumping station.
+* Oil rig.
+
+Power:
+* Nuclear power plant.
+* Solar power plant.
+* Geo-thermal power plant.
+* Coal power plant.
+* Oil power plant.
+
+Ores:
+* Coal
+* Metal
+* Stone
+* Gold
+* Silver
+* Mese
+* Uranium
+* Diamond
+
+Mods:
+* house (houses)
+* city (streets and buildings)
+* logistics (graph library)
+* transport (intercity connections)
+* industry (resources and factories)
+* builda (player and mechanics)
+* polymap (world map)

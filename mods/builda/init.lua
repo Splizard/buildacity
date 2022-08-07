@@ -154,7 +154,6 @@ minetest.register_on_joinplayer(function(player)
         "builda:shop 1",
         "builda:mall 1",
         "builda:skyscraper 1",
-        "builda:mine 1",
         "builda:destroyer 1", 
     }
 
@@ -259,7 +258,7 @@ minetest.register_decoration({
 
 
 --Roads are starting points, where a player can start building from.
-minetest.register_decoration({
+--[[minetest.register_decoration({
     name = "builda:tree",
     deco_type = "simple",
     place_on = {"polymap:grass"},
@@ -268,7 +267,7 @@ minetest.register_decoration({
     y_max = 31000,
     y_min = 0,
     decoration = "city:tree_a",
-})
+})]]
 
 --Roads are starting points, where a player can start building from.
 minetest.register_decoration({
@@ -346,6 +345,7 @@ minetest.register_item("builda:road", {
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
             if pointed_thing.type == "node" then
+                print( PlayerCanAfford(user, 1))
                 if PlayerCanAfford(user, 1) and logistics.place("city:street", pointed_thing.above, user) then
                     AddPlayerCoins(user, -1)
                     minetest.sound_play("builda_pay", {pos = pointed_thing.above, max_hear_distance = 20})

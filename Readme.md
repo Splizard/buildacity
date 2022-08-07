@@ -45,7 +45,6 @@ a modder, submit a PR!
 * Upgradable Crafts
 * Disasters
 * Farms/Industry
-* Smoother Coastlines
 * Mesecon-style power?
 * Bridges, Tunnels and Hilly Roads
 * Driving around the city in a car.

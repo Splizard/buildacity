@@ -1,0 +1,14 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl asphalt(Clone)
+Kd 0.431 0.455 0.529
+
+newmtl asphaltEdge(Clone)
+Kd 0.322 0.337 0.396
+
+newmtl pavement(Clone)
+Kd 0 0 0
+
+newmtl leafsGreen(Clone)
+Kd 1 0.662 0
+
