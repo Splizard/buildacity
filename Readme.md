@@ -60,6 +60,6 @@ that would help to polish & improve Builda City.
   (for singleplayer) if provided.
 
 ## License
-This project is licensed under the The Qlovatech Community Trademark License 1.0
+This project is licensed under the https://the.quetzal.community/trademark-license
 this means you can do what you like with this project as long as you share your 
-changes and respect the community trademarks. See the https://qlova.tech/ctl/1.0
+changes and respect the community trademarks.
