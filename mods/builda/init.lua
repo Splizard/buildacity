@@ -90,7 +90,7 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
     end
 end)
 
-minetest.hud_replace_builtin("health", nil)
+minetest.hud_replace_builtin("health", {})
 
 local last_inventory_update = 0
 
