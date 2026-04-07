@@ -19,7 +19,7 @@ end
 --this function has no effect and returns false.
 function city.disable(pos) 
     local node = minetest.get_node(pos)
-    if minetest.get_item_group(node.name, "energy_source") and not string.match(node.name, "city:.*_disabled") then
+    if minetest.get_item_group(node.name, "energy_source") > 0 and not string.match(node.name, "city:.*_disabled") then
         minetest.set_node(pos, {name = node.name.."_disabled", param2 = node.param2})
         return true
     end
@@ -51,7 +51,15 @@ function city.power(pos)
             suffix = "_lit"
         end
 
-        minetest.set_node(pos, {name = string.sub(node.name, 0, #node.name-off_suffix_len)..suffix, param2 = node.param2})
+        local name = string.sub(node.name, 0, #node.name-off_suffix_len)..suffix
+        local aliases = minetest.registered_aliases or {}
+        name = aliases[name] or name
+        if not minetest.registered_nodes[name] then
+            minetest.log("warning", "[city] refusing to power unknown node: "..name)
+            return false
+        end
+
+        minetest.set_node(pos, {name = name, param2 = node.param2})
         --city.add(city.at(pos), "power_consumption")
 
         return true

@@ -294,7 +294,6 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
 
     vm:set_data(data)
     vm:set_param2_data(param2)
-    vm:set_lighting({day=0, night=0})
 	vm:calc_lighting()
-	vm:write_to_map()
+	vm:write_to_map(true)
 end)

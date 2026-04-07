@@ -104,6 +104,10 @@ logistics.node_near = function(pos, player, group)
     if dir(left) then table.insert(candidates, left) end
     if dir(right) then table.insert(candidates, right) end
 
+    if #candidates == 0 then
+        return nil
+    end
+
     local result
 
     if player then
@@ -131,7 +135,9 @@ end
 logistics.index = function(pos) 
     local node = minetest.get_node({x=pos.x, y=pos.y-1, z=pos.z})
     local def = minetest.registered_nodes[node.name]
-    if def.paramtype ~= "none" or def.paramtype2 ~= "none" then
+    local paramtype = def and def.paramtype or "none"
+    local paramtype2 = def and def.paramtype2 or "none"
+    if paramtype ~= "none" or paramtype2 ~= "none" then
         error("node below logistics node must not use paramtype2")
     end
     return node.param1*255 + node.param2
@@ -155,11 +161,16 @@ end
 -- an adjacent logistics node to be present.
 logistics.place = function(name, pos, player)
     local def = minetest.registered_nodes[name]
-    if not def.logistics then
+    if not def or not def.logistics then
         error("node must be registered as a logistics node with a logistics.network string")
     end
     if not def.connects_to then
         error("node must be registered with a connects_to string")
+    end
+
+    local current = minetest.get_node(pos)
+    if current.name ~= "air" and minetest.get_item_group(current.name, "replaceable") == 0 then
+        return false
     end
 
     local group = string.match(def.connects_to, "group:(.*)")
@@ -179,15 +190,15 @@ logistics.place = function(name, pos, player)
         db:set_int(network.."_count", count)
         logistics_set_index(adjacent, index)
 
-        local def = logistics.registered_networks[network]
-        if def.on_create then
-            def.on_create(adjacent, player)
+        local network_def = logistics.registered_networks[network]
+        if network_def and network_def.on_create then
+            network_def.on_create(adjacent, player)
         end
     end
 
     -- accumulate/add resources.
     if def.resources then
-        local resources = def.resources()
+        local resources = def.resources(pos)
         for resource, amount in pairs(resources) do
             local total = db:get_int(network.."/"..index.."/"..resource)
             if total == 0 then
@@ -223,18 +234,24 @@ end
 logistics.remove = function(pos, player) 
     local node = minetest.get_node(pos)
     local def = minetest.registered_nodes[node.name]
-    if def then
-        
-        local group = string.match(def.connects_to, "group:(.*)")
-        local network = def.logistics.network
+    if not def or not def.logistics or not def.connects_to then
+        return false
+    end
 
+    local group = string.match(def.connects_to, "group:(.*)")
+    if not group then
+        return false
+    end
+    local network = def.logistics.network
+    local index = logistics.index(pos)
+
+    if index == 0 then
         local adjacent = logistics.node_near(pos, player, group)
         if not adjacent then
             return false
         end
 
-        -- either fetch the index, or create a new one.
-        local index = logistics.index(adjacent)
+        index = logistics.index(adjacent)
         if index == 0 then
             local count = db:get_int(network.."_count")
             count = count + 1
@@ -242,25 +259,25 @@ logistics.remove = function(pos, player)
             db:set_int(network.."_count", count)
             logistics_set_index(adjacent, index)
 
-            local def = logistics.registered_networks[network]
-            if def.on_create then
-                def.on_create(adjacent, player)
+            local network_def = logistics.registered_networks[network]
+            if network_def and network_def.on_create then
+                network_def.on_create(adjacent, player)
             end
         end
+    end
 
-        -- accumulate/add resources.
-        if def.resources then
-            local resources = def.resources()
-            for resource, amount in pairs(resources) do
-                local total = db:get_int(network.."/"..index.."/"..resource)
-                if total == 0 then
-                    local keys = db:get_string(network.."/"..index.."_keys")
-                    keys = keys..","..resource
-                    db:set_string(network.."/"..index.."_keys", keys)
-                end
-                total = total - amount
-                db:set_int(network.."/"..index.."/"..resource, total)
+    -- accumulate/add resources.
+    if def.resources then
+        local resources = def.resources(pos)
+        for resource, amount in pairs(resources) do
+            local total = db:get_int(network.."/"..index.."/"..resource)
+            if total == 0 then
+                local keys = db:get_string(network.."/"..index.."_keys")
+                keys = keys..","..resource
+                db:set_string(network.."/"..index.."_keys", keys)
             end
+            total = total - amount
+            db:set_int(network.."/"..index.."/"..resource, total)
         end
     end
 

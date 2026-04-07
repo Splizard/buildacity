@@ -5,12 +5,25 @@
 
 local S = minetest.get_translator("builda")
 
-local coins_count = 1;
-local energy_count = 2;
+local player_huds = {}
+
+local update_player_hud = function(player, stat)
+    local hud = player_huds[player:get_player_name()]
+    if not hud then
+        return
+    end
+
+    if (not stat or stat == "coins") and hud.coins then
+        player:hud_change(hud.coins, "text", tostring(player:get_meta():get_int("coins")))
+    end
+    if (not stat or stat == "energy") and hud.energy then
+        player:hud_change(hud.energy, "text", tostring(math.floor(0.5+player:get_meta():get_float("energy"))))
+    end
+end
 
 local AddPlayerEnergy = function(player, energy)
     player:get_meta():set_float("energy", player:get_meta():get_float("energy")+energy)
-    player:hud_change(energy_count, "text", math.floor(0.5+player:get_meta():get_float("energy")))
+    update_player_hud(player, "energy")
 end
 
 --returns true if the player can afford.
@@ -18,9 +31,10 @@ local AddPlayerCoins = function(player, coins)
     player:get_meta():set_int("coins", player:get_meta():get_int("coins") + coins);
     if player:get_meta():get_int("coins") < 0 then
         player:get_meta():set_int("coins", player:get_meta():get_int("coins")-coins)
+        update_player_hud(player, "coins")
         return false
     end
-    player:hud_change(coins_count, "text", player:get_meta():get_int("coins"))
+    update_player_hud(player, "coins")
     return true
 end
 
@@ -33,6 +47,10 @@ local PlayerHasEnergy = function(player, energy)
 end
 
 minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
+    if not puncher or not puncher:is_player() then
+        return
+    end
+
     if PlayerHasEnergy(puncher, 1) and city.power(pos) then
         local income = 1
         if string.match(node.name,"shop") then
@@ -66,9 +84,12 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
             energy = energy * (pos.y-8) --energy is proportional to height (wind)
         end
         if city.disable(pos) then
-            minetest.after(1, function(energy)
-                AddPlayerEnergy(puncher, energy) 
-            end, energy)
+            minetest.after(1, function(player_name, energy)
+                local player = minetest.get_player_by_name(player_name)
+                if player then
+                    AddPlayerEnergy(player, energy)
+                end
+            end, puncher:get_player_name(), energy)
             minetest.sound_play("builda_charge", {pos = pos, max_hear_distance = 20})
         end
     end
@@ -89,8 +110,6 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
         })
     end
 end)
-
-minetest.hud_replace_builtin("health", {})
 
 local last_inventory_update = 0
 
@@ -118,11 +137,6 @@ minetest.register_globalstep(function(dt)
                 pos.y = 10
             end
 
-            if true then
-                city.guide(player)
-                return
-            end
-
             --FIXME how to show city info?
 
             
@@ -139,7 +153,12 @@ minetest.register_item(":", {
 
 --We need to attach the Energy and Humans HUD counts.
 --Humans is top left, Energy is top right.
-minetest.register_on_joinplayer(function(player)    
+minetest.register_on_leaveplayer(function(player)
+    player_huds[player:get_player_name()] = nil
+end)
+
+minetest.register_on_joinplayer(function(player)
+    local name = player:get_player_name()
 
     --Give the player their starting coins.
     if player:get_meta():contains("coins") == false then
@@ -163,6 +182,7 @@ minetest.register_on_joinplayer(function(player)
     --Remove default HUD elements.
     player:hud_set_flags({healthbar=false, breathbar=false, wielditem=false})
     player:hud_set_hotbar_image("builda_empty.png")
+    player_huds[name] = {}
 
     --Brain Icon.
     player:hud_add({
@@ -174,22 +194,22 @@ minetest.register_on_joinplayer(function(player)
         offset = {x=-64-10, y=0},
     })
     --Brain Count
-    player:hud_add({
+    player_huds[name].coins = player:hud_add({
         name = "coins",
         hud_elem_type = "text",
         position = {x=1, y=0},
-        text = player:get_meta():get_int("coins"),
+        text = tostring(player:get_meta():get_int("coins")),
         number = 0xffffff,
         size = {x=3, y=3},
         offset = {x=-90, y=5},
         alignment = {x=-1, y=1},
     })
     --Energy Count
-    player:hud_add({
+    player_huds[name].energy = player:hud_add({
         name = "energy",
         hud_elem_type = "text",
         position = {x=1, y=0},
-        text = math.floor(player:get_meta():get_float("energy")+0.5),
+        text = tostring(math.floor(player:get_meta():get_float("energy")+0.5)),
         number = 0xffffff,
         size = {x=3, y=3},
         offset = {x=-80, y=64+5},
@@ -215,8 +235,14 @@ minetest.register_on_joinplayer(function(player)
         mesh = "builda_craft_default.obj",
         textures = {"builda_craft_default.png", "builda_craft_default_secondary.png", "builda_craft_default_highlight.png", "builda_craft_default_details.png"},
     })
-    player:set_eye_offset(nil, {x=0,y=0,z=10})
-    local name = player:get_player_name()
+    if player.set_clouds then
+        player:set_clouds({density = 0})
+    end
+    if player.set_lighting then
+        player:set_lighting({shadows = {intensity = 0}})
+    end
+    player:set_eye_offset({x=0,y=0,z=0}, {x=0,y=0,z=10})
+    update_player_hud(player)
     local privs = minetest.get_player_privs(name)
     privs.fly = true
     minetest.set_player_privs(name, privs)
@@ -326,7 +352,7 @@ minetest.register_item("builda:info", {
 
 minetest.register_item("builda:mine", {
     description = S("Mine"),
-    inventory_image = "builda_mine.png",
+    inventory_image = "city_white.png",
     type = "tool",
     on_place = function(itemstack, user, pointed_thing)
         if pointed_thing.type == "node" then
@@ -434,7 +460,7 @@ minetest.register_item("builda:destroyer", {
             end
 
             local node = minetest.get_node(pos)
-            if PlayerHasEnergy(user, 5) and minetest.get_item_group(node.name, "consumer") > 0 and logistics.remove(pos) then
+            if PlayerHasEnergy(user, 5) and minetest.get_item_group(node.name, "consumer") > 0 and logistics.remove(pos, user) then
                 AddPlayerEnergy(user, -5)
 
                 --'explode' the node.

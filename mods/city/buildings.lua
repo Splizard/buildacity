@@ -3,6 +3,21 @@
 city.buildings = {}
 city.buildings_by_width = {}
 
+local copy_tiles = function(tiles)
+    local result = {}
+    for i, tile in ipairs(tiles) do
+        if type(tile) == "table" then
+            result[i] = table.copy(tile)
+            if type(tile.color) == "table" then
+                result[i].color = table.copy(tile.color)
+            end
+        else
+            result[i] = tile
+        end
+    end
+    return result
+end
+
 minetest.register_node("city:space", {
     drawtype = "airlike",
     paramtype = "light",
@@ -139,16 +154,19 @@ function city.register_building(name, def)
     end
 
     local decayed_node_def = table.copy(node_def)
+    decayed_node_def.groups = table.copy(node_def.groups)
+    decayed_node_def.tiles = copy_tiles(node_def.tiles)
 
     --replace lit windows with dark windows
     for i,v in ipairs(decayed_node_def.tiles) do
-        if v.color.window then
+        if v.color and v.color.window then
             decayed_node_def.tiles[i].color = 0xFF1D2222
         end
     end
 
     local suffix = "_off"
     node_def.groups["consumer"] = 1
+    decayed_node_def.groups["consumer"] = 1
 
     minetest.register_node(name, node_def)
     minetest.register_node(name..suffix, decayed_node_def)
@@ -218,7 +236,7 @@ city.register_building("city:shop_b", {height = 0.75, mesh = "city_shop_b", kind
 city.register_building("city:shop_c", {height = 0.75, mesh = "city_shop_c", kind = "shop"})
 city.register_building("city:shop_d", {height = 0.75, mesh = "city_shop_d", kind = "shop"})
 city.register_building("city:shop_e", {height = 0.75, mesh = "city_shop_e", kind = "shop", width = 2})
-city.register_building("city:shop_f", {height = 0.75, mesh = "city_shop_e", kind = "shop", width = 2})
+city.register_building("city:shop_f", {height = 0.75, mesh = "city_shop_f", kind = "shop", width = 2})
 
 
 city.register_building("city:mall_a", {height = 1, mesh = "city_mall_a", kind = "mall", width = 2})
@@ -227,3 +245,6 @@ city.register_building("city:mall_c", {height = 1, mesh = "city_mall_c", kind = 
 city.register_building("city:mall_d", {height = 1, mesh = "city_mall_d", kind = "mall"})
 city.register_building("city:mall_e", {height = 1, mesh = "city_mall_e", kind = "mall"})
 city.register_building("city:mall_f", {height = 1, mesh = "city_mall_f", kind = "mall", width = 2})
+
+minetest.register_alias("city:mall_g", "city:mall_f")
+minetest.register_alias("city:mall_g_off", "city:mall_f_off")

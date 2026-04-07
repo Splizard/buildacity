@@ -61,6 +61,7 @@ local register_street = function(name, mesh)
     }
     
     local def_lit = table.copy(def)
+    def_lit.groups = table.copy(def.groups)
     def_lit.on_construct = function (pos, placer, itemstack, pointed_thing)
         minetest.set_node({x=pos.x, y=pos.y+1, z=pos.z}, {name="city:streetlight"})
     end
@@ -69,12 +70,14 @@ local register_street = function(name, mesh)
     def_lit.groups["consumer"] = 1
 
     local def_gap = table.copy(def)
+    def_gap.groups = table.copy(def.groups)
     def_gap.on_construct = function (pos, placer, itemstack, pointed_thing)
         minetest.set_node({x=pos.x, y=pos.y+1, z=pos.z}, {name="city:streetlight"})
     end
     def_gap.mesh = mesh..".obj"
     def_gap.tiles = city.load_material("city", mesh..".mtl")
     def_gap.groups["consumer"] = 1
+    def.groups["consumer"] = 1
 
     --make unlit road a bit more obvious.
     for i,v in ipairs(def.tiles) do
@@ -101,6 +104,20 @@ register_street("city:street", "city_road")
 register_street("city:street_corner", "city_road_corner")
 register_street("city:street_junction", "city_road_junction")
 register_street("city:street_crossing", "city_road_crossing")
+
+local legacy_road_aliases = {
+    road = "street",
+    road_corner = "street_corner",
+    road_junction = "street_junction",
+    road_crossing = "street_crossing",
+}
+
+for old, new in pairs(legacy_road_aliases) do
+    for _, suffix in ipairs({"", "_off", "_lit"}) do
+        minetest.register_alias("city:"..old..suffix, "city:"..new..suffix)
+    end
+end
+minetest.register_alias("city:road_light", "city:streetlight")
 
 logistics.register_rail("city:street", "city:street_corner", "city:street_junction", "city:street_crossing")
 logistics.register_rail("city:street_lit", "city:street_corner_lit", "city:street_junction_lit", "city:street_crossing_lit")
