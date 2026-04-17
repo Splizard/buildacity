@@ -25,6 +25,7 @@ minetest.register_node("polymap:slope", {
     paramtype2 = "facedir",
     mesh = "polymap_slope.obj",
     tiles = {"polymap_grass.png"},
+    sunlight_propagates = true,
     groups = {ground=1},
     is_ground_content = true,
     pointable = false,
@@ -37,6 +38,7 @@ minetest.register_node("polymap:convex", {
     paramtype2 = "facedir",
     mesh = "polymap_convex.obj",
     tiles = {"polymap_grass.png"},
+    sunlight_propagates = true,
     groups = {ground=1},
     is_ground_content = true,
     pointable = false,
@@ -75,6 +77,7 @@ minetest.register_node("polymap:fold", {
     paramtype2 = "facedir",
     mesh = "polymap_fold.obj",
     tiles = {"polymap_grass.png"},
+    sunlight_propagates = true,
     groups = {ground=1},
     is_ground_content = true,
     pointable = false,
@@ -87,6 +90,7 @@ minetest.register_node("polymap:hole", {
     paramtype2 = "facedir",
     mesh = "polymap_hole.obj",
     tiles = {"polymap_grass.png"},
+    sunlight_propagates = true,
     groups = {ground=1},
     is_ground_content = true,
     pointable = false,
@@ -126,6 +130,7 @@ minetest.register_node("polymap:concave", {
     paramtype2 = "facedir",
     mesh = "polymap_concave.obj",
     tiles = {"polymap_grass.png"},
+    sunlight_propagates = true,
     groups = {ground=1},
     is_ground_content = true,
     pointable = false,
@@ -138,6 +143,7 @@ minetest.register_node("polymap:junction", {
     paramtype2 = "facedir",
     mesh = "polymap_junction.obj",
     tiles = {"polymap_grass.png"},
+    sunlight_propagates = true,
     groups = {ground=1},
     is_ground_content = true,
     pointable = false,
@@ -161,10 +167,23 @@ minetest.register_node("polymap:coast", {
     drawtype = "mesh",
     mesh = "polymap_coast.obj",
     tiles = {"polymap_grass.png", "polymap_water.png"},
+    paramtype = "light",
     paramtype2 = "facedir",
+    sunlight_propagates = true,
     is_ground_content = true,
     pointable = false,
 })
+
+local legacy_slope_aliases = {
+    slope_grass = "slope",
+    slope_inner_grass = "concave",
+    slope_outer_grass = "convex",
+    slope_pike_grass = "spike",
+}
+
+for old, new in pairs(legacy_slope_aliases) do
+    minetest.register_alias("polymap:"..old, "polymap:"..new)
+end
 
 minetest.register_biome({
     name = "grassland",

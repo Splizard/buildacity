@@ -21,7 +21,10 @@ logistics.register_network("city", {
         local name = city.names[math.random(1, #city.names-1)]
         db:set_string("city/"..index.."/name", name)
 
-        local founder = player:get_player_name()
+        local founder = ""
+        if player then
+            founder = player:get_player_name()
+        end
         db:set_string("city/"..index.."/founder", founder)
     end,
 
@@ -42,7 +45,8 @@ function city.load_material(mod, mtl)
     --this works with models exported from AssetForge.
     local mtl_file = io.open(models_path..mtl, "r")
     if not mtl_file then
-        print(mtl)
+        minetest.log("error", "[city] could not load material file: "..models_path..mtl)
+        return {{name="city_white.png", color={r=255, g=255, b=255, a=255}}}
     end
     local tiles = {}
     for line in mtl_file:lines() do
@@ -64,6 +68,7 @@ function city.load_material(mod, mtl)
             table.insert(tiles, {name="city_white.png", color=color})
         end
     end
+    mtl_file:close()
     return tiles
 end
 
